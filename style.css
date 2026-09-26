@@ -453,3 +453,7 @@ footer .links a:nth-child(4n+4):hover { color: var(--violet); }
 .lost p { font-size: 25px; margin-bottom: 28px; }
 
 .btn[hidden] { display: none; }
+.hint { margin-top: 14px; font-size: 20px; color: var(--dim); display: flex; align-items: center; gap: 10px; }
+.hint::before { content: ""; width: 10px; height: 10px; background: var(--cyan); animation: blink 1s steps(1) infinite; }
+.hint[hidden] { display: none; }
+.after.enter { animation: enter 0.35s steps(5) both; }

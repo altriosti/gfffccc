@@ -60,12 +60,18 @@
   $$(".handle").forEach((e) => { e.textContent = handle(); });
   $$(".open-x").forEach((a) => { if (CFG.xProfile) a.href = CFG.xProfile; else a.hidden = true; });
   $$(".open-post").forEach((a) => { if (CFG.xPost) a.href = CFG.xPost; else a.hidden = true; });
-  if (!CFG.xProfile) opened.follow = true;
-  if (!CFG.xPost) { opened.like = true; opened.repost = true; opened.comment = true; $$(".confirm").forEach((b) => b.classList.add("ready")); }
-  $$("[data-open]").forEach((a) => a.addEventListener("click", () => {
-    opened[a.dataset.open] = true;
-    $$('[data-need="' + a.dataset.open + '"]').forEach((b) => b.classList.add("ready"));
-  }));
+  if (!CFG.xProfile) reveal("follow", true);
+  if (!CFG.xPost) ["like", "repost", "comment"].forEach((k) => reveal(k, true));
+  function reveal(key, now) {
+    opened[key] = true;
+    $$('[data-need="' + key + '"]').forEach((b) => b.classList.add("ready"));
+    const show = () => {
+      $$('.after[data-for="' + key + '"]').forEach((el) => { if (el.hidden) { el.hidden = false; el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); } });
+      $$('[data-hint="' + key + '"]').forEach((el) => { el.hidden = true; });
+    };
+    if (now) show(); else setTimeout(show, 900);
+  }
+  $$("[data-open]").forEach((a) => a.addEventListener("click", () => reveal(a.dataset.open, false)));
 
   function say(text, bad) {
     const b = $("#bubble");

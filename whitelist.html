@@ -75,8 +75,9 @@
           <div class="k">Step 1 of 6</div>
           <h2>Follow us on X</h2>
           <p>Follow <b class="handle">our account</b> so you never miss the mint.</p>
-          <div class="actions"><a class="btn lime open-x" data-open="follow" target="_blank" rel="noopener" href="#">Open <span class="handle">X</span> <svg class="ico"><use href="#i-ext"/></svg></a></div>
-          <div class="ask">
+          <div class="actions"><a class="btn lime open-x" data-open="follow" target="_blank" rel="noopener" href="#">Follow <span class="handle">us</span> <svg class="ico"><use href="#i-ext"/></svg></a></div>
+          <p class="hint" data-hint="follow">Tap the button, follow us on X, then come back here.</p>
+          <div class="ask after" data-for="follow" hidden>
             <p class="q">Did you follow?</p>
             <div class="actions">
               <button class="btn white" id="followYes">Yes, I followed</button>
@@ -90,8 +91,12 @@
           <div class="k">Step 2 of 6</div>
           <h2>Like the post</h2>
           <p>Open our whitelist post and tap the heart.</p>
-          <div class="actions"><a class="btn cyan open-post" data-open="like" target="_blank" rel="noopener" href="#">Open the post <svg class="ico"><use href="#i-ext"/></svg></a></div>
-          <div class="actions"><button class="btn white confirm" data-need="like" data-next="3">I liked the post</button><button class="btn ghost back" data-back="1">Back</button></div>
+          <div class="actions"><a class="btn cyan open-post" data-open="like" target="_blank" rel="noopener" href="#">Like the post <svg class="ico"><use href="#i-ext"/></svg></a><button class="btn ghost back" data-back="1">Back</button></div>
+          <p class="hint" data-hint="like">Tap the button, like the post, then come back here.</p>
+          <div class="ask after" data-for="like" hidden>
+            <p class="q">Did you like the post?</p>
+            <div class="actions"><button class="btn white confirm" data-need="like" data-next="3">Yes, I liked it</button></div>
+          </div>
           <p class="msg" id="msg2" role="alert"></p>
         </section>
 
@@ -99,22 +104,29 @@
           <div class="k">Step 3 of 6</div>
           <h2>Repost it</h2>
           <p>Repost the same post so more crows can find the pitcher.</p>
-          <div class="actions"><a class="btn cyan open-post" data-open="repost" target="_blank" rel="noopener" href="#">Open the post <svg class="ico"><use href="#i-ext"/></svg></a></div>
-          <div class="actions"><button class="btn white confirm" data-need="repost" data-next="4">I reposted it</button><button class="btn ghost back" data-back="2">Back</button></div>
+          <div class="actions"><a class="btn cyan open-post" data-open="repost" target="_blank" rel="noopener" href="#">Repost the post <svg class="ico"><use href="#i-ext"/></svg></a><button class="btn ghost back" data-back="2">Back</button></div>
+          <p class="hint" data-hint="repost">Tap the button, repost it, then come back here.</p>
+          <div class="ask after" data-for="repost" hidden>
+            <p class="q">Did you repost it?</p>
+            <div class="actions"><button class="btn white confirm" data-need="repost" data-next="4">Yes, I reposted it</button></div>
+          </div>
           <p class="msg" id="msg3" role="alert"></p>
         </section>
 
         <section class="wstep" data-step="4" hidden>
           <div class="k">Step 4 of 6</div>
           <h2>Comment and tag 3 friends</h2>
-          <p>Reply to the post and tag three friends. Then copy the link to your comment and paste it below.</p>
-          <div class="actions"><a class="btn cyan open-post" data-open="comment" target="_blank" rel="noopener" href="#">Open the post <svg class="ico"><use href="#i-ext"/></svg></a></div>
-          <label class="field">
-            <span>Your comment link</span>
-            <input id="link" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://x.com/yourname/status/1234567890">
-            <small>On your comment, tap Share, then Copy link.</small>
-          </label>
-          <div class="actions"><button class="btn white" id="linkNext">Continue</button><button class="btn ghost back" data-back="3">Back</button></div>
+          <p>Reply to the post and tag three friends. Then copy the link to your comment and paste it here.</p>
+          <div class="actions"><a class="btn cyan open-post" data-open="comment" target="_blank" rel="noopener" href="#">Comment on the post <svg class="ico"><use href="#i-ext"/></svg></a><button class="btn ghost back" data-back="3">Back</button></div>
+          <p class="hint" data-hint="comment">Tap the button, comment and tag 3 friends, then come back here.</p>
+          <div class="ask after" data-for="comment" hidden>
+            <label class="field">
+              <span>Your comment link</span>
+              <input id="link" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://x.com/yourname/status/1234567890">
+              <small>On your comment, tap Share, then Copy link.</small>
+            </label>
+            <div class="actions"><button class="btn white" id="linkNext">Continue</button></div>
+          </div>
           <p class="msg" id="msg4" role="alert"></p>
         </section>
 
