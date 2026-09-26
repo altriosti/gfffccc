@@ -267,7 +267,7 @@
     } catch (e) {
       setWork(false);
       const code = e && e.message;
-      msg(5, ERR[code] || "Something went wrong. Please check your connection and try again.");
+      msg(5, ERR[code] || (code === "server" ? "The whitelist server had a problem. Please try again soon." : "Could not reach the whitelist server. Please try again in a minute.") + " (" + String(code || "network").slice(0, 60) + ")");
       say("The pebble slipped! Let us try again.", true);
       btn.disabled = false;
       $$(".wstep[data-step='5'] .back").forEach((b) => { b.disabled = false; });
