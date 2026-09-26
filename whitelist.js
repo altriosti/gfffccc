@@ -262,12 +262,14 @@
           return;
         }
         if ((j.error === "used" || j.error === "expired" || j.error === "pow" || j.error === "early" || j.error === "bad_request") && tries < 3) continue;
-        throw new Error(j.error || "failed");
+        const er = new Error(j.error || "failed");
+        er.detail = j.message || "";
+        throw er;
       }
     } catch (e) {
       setWork(false);
       const code = e && e.message;
-      msg(5, ERR[code] || (code === "server" ? "The whitelist server had a problem. Please try again soon." : "Could not reach the whitelist server. Please try again in a minute.") + " (" + String(code || "network").slice(0, 60) + ")");
+      msg(5, ERR[code] || (code === "server" ? "The whitelist server had a problem. Please try again soon." : "Could not reach the whitelist server. Please try again in a minute.") + " (" + String(code || "network").slice(0, 40) + (e && e.detail ? ": " + String(e.detail).slice(0, 140) : "") + ")");
       say("The pebble slipped! Let us try again.", true);
       btn.disabled = false;
       $$(".wstep[data-step='5'] .back").forEach((b) => { b.disabled = false; });
