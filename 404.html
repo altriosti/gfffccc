@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lost crow · Pebble Crows</title>
+<script>
+(function () {
+  var p = location.pathname.replace(/\/+$/, "");
+  if (/\/whitelist(\.html)?$/i.test(p) || /\/whitelist\/index\.html$/i.test(location.pathname)) location.replace(p.replace(/\/whitelist.*$/i, "/whitelist"));
+})();
+</script>
+<meta name="theme-color" content="#ccff00">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="lime-bg lost">
+  <div class="wrap">
+    <canvas id="crow" class="px" width="24" height="24"></canvas>
+    <span class="tag red"><i></i>Error 404</span>
+    <h1>This crow flew off.</h1>
+    <p>The page you are looking for is not in the pitcher.</p>
+    <a class="btn" href="/">Back to home</a>
+  </div>
+</main>
+<script src="/crows.js"></script>
+<script src="/pixels.js"></script>
+<script>
+  Crows.draw(document.getElementById("crow").getContext("2d"), Crows.roll());
+</script>
+</body>
+</html>

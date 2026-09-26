@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>if (/\.html$/.test(location.pathname)) history.replaceState(null, "", location.pathname.replace(/index\.html$/, "") + location.search + location.hash);</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pebble Crows · Drop a pebble. Raise the water.</title>
+<meta name="description" content="Pebble Crows: 4,000 fully on-chain pixel crows mined with real proof of work on Robinhood Chain. Drop pebbles, raise the water, earn from every mint.">
+<meta property="og:title" content="Pebble Crows">
+<meta property="og:description" content="4,000 fully on-chain pixel crows. Mine with your GPU and CPU. Drop a pebble, raise the water.">
+<meta property="og:image" content="og.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="og.png">
+<meta name="theme-color" content="#ccff00">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js"}}</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-go" viewBox="0 0 8 7"><rect x="0" y="3" width="7" height="1"/><rect x="4" y="0" width="1" height="1"/><rect x="5" y="1" width="1" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="7" y="3" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="4" y="6" width="1" height="1"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 7 7"><rect x="2" y="0" width="5" height="1"/><rect x="6" y="0" width="1" height="5"/><rect x="5" y="1" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/></symbol>
+  <symbol id="i-down" viewBox="0 0 7 8"><rect x="3" y="0" width="1" height="7"/><rect x="0" y="4" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="3" y="7" width="1" height="1"/><rect x="4" y="6" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 8 8"><rect x="0" y="1" width="3" height="2"/><rect x="3" y="3" width="2" height="2"/><rect x="5" y="1" width="2" height="2"/><rect x="6" y="0" width="2" height="4"/><rect x="0" y="5" width="3" height="2"/><rect x="5" y="5" width="2" height="2"/><rect x="6" y="4" width="2" height="4"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="bar">
+    <a class="brand" href="#top"><canvas id="logo" class="px" width="24" height="24"></canvas>PEBBLE<b>CROWS</b></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#story">Story</a>
+      <a href="#mining">Mining</a>
+      <a href="#pitchers">Pitchers</a>
+      <a href="#token">$PEBBLE</a>
+      <a href="#water">Water</a>
+      <a href="#collection">Collection</a>
+      <a href="#faq">FAQ</a>
+      <a id="navX" href="#" target="_blank" rel="noopener" hidden>X</a>
+    </nav>
+    <a class="btn lime small" href="whitelist">Join Whitelist <svg class="ico go"><use href="#i-go"/></svg></a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+    <i class="progressbar" id="progressbar"></i>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero lime-bg">
+  <div class="wrap">
+    <div class="copy">
+      <span class="tag"><i></i>Built on Robinhood Chain</span>
+      <h1><span class="l1">Drop a pebble.</span><span class="l2">Raise the</span><span class="l3">water.</span></h1>
+      <p class="lead">A thirsty crow found a pitcher with too little water. It dropped pebbles, one by one, until the water rose. Pebble Crows turns that fable into a proof-of-work mint: your device searches for pebbles, and every find becomes a crow.</p>
+      <div class="cta">
+        <a class="btn" href="whitelist">Join the Whitelist <svg class="ico go"><use href="#i-go"/></svg></a>
+        <a class="btn red" href="#mining">How it works <svg class="ico"><use href="#i-down"/></svg></a>
+      </div>
+      <div class="stats">
+        <div><b>4,000</b><span>Crows</span></div>
+        <div><b>16</b><span>Pitchers</span></div>
+        <div><b>0.0005</b><span>ETH first mint</span></div>
+        <div><b>100%</b><span>On-chain art</span></div>
+      </div>
+    </div>
+    <div class="stage" id="stage">
+      <div class="fallback"><canvas id="heroFallback" class="px" width="24" height="24"></canvas></div>
+      <div class="hud"><span class="dot"></span><span>PEBBLES <b id="hudCount">0</b></span><span class="bar"><i id="hudBar"></i></span><span>WATER <b id="hudWater">0%</b></span></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee red-bg" aria-hidden="true"><div class="track" id="marquee"></div></div>
+
+<section class="block story dark grid-bg" id="story">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag cyan"><i></i>The fable</span>
+      <h2>An old fable.<br><span class="hl-cyan">A new mint.</span></h2>
+      <p>Every Pebble Crow is born from real work. No lucky clicks, no bots racing a public mint. Just crows searching the ground, one pebble at a time.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card tilt reveal"><canvas class="px" data-crow="11"></canvas><h3>The thirsty crow</h3><p>The pitcher is deep and the water is low. The crow cannot reach it, so it starts looking for pebbles.</p><span class="n">01</span></div>
+      <div class="card tilt a-red reveal"><canvas class="px" data-crow="27"></canvas><h3>One pebble at a time</h3><p>Your GPU and CPU search the ground for a pebble: a hash below the target. Each find is one crow.</p><span class="n">02</span></div>
+      <div class="card tilt a-cyan reveal"><canvas class="px" data-crow="42"></canvas><h3>The water rises</h3><p>Every mint fills the pitcher. 65% of all mint ETH becomes Water that flows to crows who stay.</p><span class="n">03</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="block dark" id="mining">
+  <div class="wrap mine">
+    <div>
+      <div class="head reveal" style="margin-bottom:0">
+        <span class="tag violet"><i></i>Proof of work</span>
+        <h2>How a crow<br><span class="hl-violet">is found</span></h2>
+        <p>Connect your wallet and press Search. Your browser turns your graphics card and processor into a crow that searches for pebbles.</p>
+      </div>
+      <ol class="steps" id="steps">
+        <li class="reveal" data-s="0"><span class="i">1</span><div><h3>Search</h3><p>Your GPU and CPU test millions of guesses every second.</p></div></li>
+        <li class="reveal" data-s="1"><span class="i">2</span><div><h3>Find</h3><p>A guess below the target is a pebble. The crow picks it up.</p></div></li>
+        <li class="reveal" data-s="2"><span class="i">3</span><div><h3>Drop</h3><p>The pebble falls into the pitcher and the water rises.</p></div></li>
+        <li class="reveal" data-s="3"><span class="i">4</span><div><h3>Mint</h3><p>A Mint button appears for 10 seconds. Press it before another crow does.</p></div></li>
+      </ol>
+    </div>
+    <div class="finder reveal" id="finder">
+      <div class="top"><b><i></i><span id="fStatus">SEARCHING</span></b><span id="fRate">412.0 MH/s</span></div>
+      <div class="meta">
+        <div><small>Target</small><strong>0x00000f..</strong></div>
+        <div><small>Guesses</small><strong id="fTries">0</strong></div>
+        <div><small>Next crow</small><strong id="fNext">#1</strong></div>
+      </div>
+      <div class="hashes" id="hashes"></div>
+      <div class="act"><button class="btn lime" id="fBtn" disabled><span class="fill" id="fFill"></span><span id="fBtnText">Searching...</span></button><p id="fMsg">Your device is looking for a pebble.</p></div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="rules">
+      <div class="rule reveal"><h3>First to mint wins</h3><p>Many crows search at once. If someone mints before you, your pebble sinks and the search starts again.</p></div>
+      <div class="rule reveal"><h3>Fair difficulty</h3><p>The target adjusts as crows are found, and eases when nobody finds a pebble for a while.</p></div>
+      <div class="rule reveal"><h3>No hoarding</h3><p>One mint per block. A wallet that keeps minting in a row finds its next pebble harder.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block red-bg" id="pitchers">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag"><i></i>16 x 250</span>
+      <h2><span class="sh-ink">4,000 crows.</span><br>16 pitchers.</h2>
+      <p>The supply is split into 16 pitchers of 250 crows. The price rises a tiny bit with every single mint, from 0.0005 ETH for the first crow to 0.02 ETH for the last.</p>
+    </div>
+    <div class="jugs reveal" id="jugs"></div>
+    <div class="chart reveal">
+      <svg id="curve" viewBox="0 0 800 270" role="img" aria-label="Mint price rises linearly from 0.0005 ETH to 0.02 ETH"></svg>
+      <div class="legend"><span>Crow #1 <b>0.0005 ETH</b></span><span>Price rises on every mint</span><span>Crow #4,000 <b class="p">0.02 ETH</b></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="block dark grid-bg" id="flow">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag"><i></i>Where mint ETH goes</span>
+      <h2>Every mint fills<br><span class="hl-lime">three cups.</span></h2>
+      <p>All ETH from minting is split by the contract, automatically. Nobody has to press a button.</p>
+    </div>
+    <div class="split reveal" id="split"><div class="a">65%</div><div class="b">25%</div><div class="c">10%</div></div>
+    <div class="split-legend">
+      <div class="reveal"><h3>Water</h3><p>Shared by every staked crow, weighted by lock length. Paid in ETH.</p></div>
+      <div class="reveal"><h3>Buyback &amp; burn</h3><p>Buys $PEBBLE from the pool and burns it, every 10 mints.</p></div>
+      <div class="reveal"><h3>Team</h3><p>Keeps the crows flying.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block dark" id="token" style="padding-top:30px">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag red"><i></i>The token</span>
+      <h2><span class="hl-red">$PEBBLE</span></h2>
+      <p>$PEBBLE trades in a Uniswap v4 pool on Robinhood Chain. The liquidity is locked forever by the contract. Nobody can pull it, not even the team.</p>
+    </div>
+    <div class="tok">
+      <div class="card tilt reveal"><h3>Trading opens</h3><div class="big">Mint #10</div><p>The pool opens by itself after the 10th crow is minted.</p></div>
+      <div class="card tilt inv reveal"><h3>Liquidity</h3><div class="big">Locked forever</div><p>The pool position is held by a locker contract with no withdraw function.</p></div>
+      <div class="card tilt a-cyan reveal"><h3>Buyback &amp; burn</h3><div class="big">Every 10</div><p>Every 10 mints, 25% of mint ETH buys $PEBBLE and burns it.</p></div>
+      <div class="card tilt a-red reveal"><h3>Anti-snipe</h3><div class="big">50% <small>to 0%</small></div><p>The buy fee starts at 50% when trading opens and falls to 0% over 5 minutes.</p><div class="foot"><div class="decay"><i></i></div><div class="decay-lbl"><span>OPEN</span><span>5 MIN</span></div></div></div>
+      <div class="card tilt reveal"><h3>After launch</h3><div class="big">0% <small>buy</small></div><p>Buying is free after the first 5 minutes. Selling has a 10% fee that supports the project.</p></div>
+      <div class="card tilt a-violet reveal"><h3>Burn a crow</h3><div class="big">Crow <small>to</small> $PEBBLE</div><p>Burn a crow to receive $PEBBLE. Fewer crows, rarer flock.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee cyan-bg rev" aria-hidden="true"><div class="track" id="marquee2"></div></div>
+
+<section class="block cyan-bg" id="water">
+  <div class="wrap">
+    <div class="head center reveal">
+      <span class="tag cyan"><i></i>Staking</span>
+      <h2>Stake a crow.<br><span class="sh-ink">Drink the Water.</span></h2>
+      <p>Lock a crow to earn a share of the Water pool, paid in ETH. Longer locks earn a bigger share.</p>
+    </div>
+    <div class="stakes">
+      <div class="stake reveal"><div class="d">7 DAYS</div><div class="glass" style="--lo:14%;--hi:34%"><i></i></div><div class="m">1x</div><p>A short sip.</p></div>
+      <div class="stake reveal"><div class="d">14 DAYS</div><div class="glass" style="--lo:30%;--hi:60%"><i></i></div><div class="m">2x</div><p>Double share of Water.</p></div>
+      <div class="stake reveal"><span class="ribbon">MOST WATER</span><div class="d">30 DAYS</div><div class="glass" style="--lo:55%;--hi:92%"><i></i></div><div class="m">4x</div><p>Four times the share.</p></div>
+    </div>
+    <p class="note">A staked crow cannot be transferred or sold until its lock ends.</p>
+  </div>
+</section>
+
+<section class="block dark grid-bg" id="collection">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag violet"><i></i>The flock</span>
+      <h2>Every crow is<br><span class="hl-lime">drawn by the chain.</span></h2>
+      <p>Each crow is a 24x24 pixel portrait stored and rendered fully on-chain. Traits are random, so every crow is its own. Pick a crow to see it as a full 3D figure.</p>
+    </div>
+    <div class="coll">
+      <div class="viewer reveal" id="viewer">
+        <span class="lbl tag cyan"><i></i>3D figure</span><span class="hint">Drag to spin</span>
+        <div class="fallback"><canvas id="viewerFallback" class="px" width="24" height="24"></canvas></div>
+        <div class="traits" id="vTraits"></div>
+      </div>
+      <div class="side reveal">
+        <div class="gallery px" id="gallery"></div>
+        <div class="row"><div class="counts" id="counts"></div></div>
+        <div class="row"><button class="btn red" id="shuffle">Shuffle crows <svg class="ico"><use href="#i-shuffle"/></svg></button><span style="color:var(--dim);font-size:20px">Sample crows from the real generator.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block dark" style="padding-top:20px">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <canvas id="ctaCrow" class="px" width="24" height="24"></canvas>
+      <div>
+        <span class="tag"><i></i>Whitelist is open</span>
+        <h2>Get a head start.</h2>
+        <p>Complete a few quick steps on X and leave your wallet. No transaction, no signature, no cost.</p>
+        <span class="perk">Your first pebble is found instantly.</span>
+      </div>
+      <a class="btn lime" href="whitelist">Join the Whitelist <svg class="ico go"><use href="#i-go"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<section class="block dark" id="faq">
+  <div class="wrap">
+    <div class="head center reveal"><span class="tag red"><i></i>FAQ</span><h2>Questions</h2></div>
+    <div class="faq">
+      <details><summary>What is Pebble Crows?</summary><p>A collection of 4,000 fully on-chain pixel crows on Robinhood Chain. Crows are minted with proof of work: your device searches for a valid hash, and each find lets you mint one crow.</p></details>
+      <details><summary>Do I need a gaming PC?</summary><p>No. Any modern browser can search. A graphics card makes the search faster, but phones and laptops can find pebbles too, especially when the target eases.</p></details>
+      <details><summary>What does the whitelist give me?</summary><p>A whitelisted wallet finds its first pebble instantly. After that first mint, it searches like everyone else.</p></details>
+      <details><summary>Does joining the whitelist cost anything?</summary><p>No. You complete a few steps on X and submit your wallet address. We never ask for a signature, a transaction or your seed phrase. Anyone who asks for those is not us.</p></details>
+      <details><summary>How much does a crow cost?</summary><p>The first crow costs 0.0005 ETH and the price rises slightly with every mint, up to 0.02 ETH for crow #4,000. You also pay normal network gas.</p></details>
+      <details><summary>What is Water?</summary><p>Water is 65% of all mint ETH. It is shared by staked crows: 7 day locks earn 1x, 14 days earn 2x, and 30 days earn 4x.</p></details>
+      <details><summary>When does minting start?</summary><p>The date will be announced on our X account. Turn on notifications so you do not miss it.</p></details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <div><a class="brand" href="#top"><canvas id="logo2" class="px" width="24" height="24"></canvas>PEBBLE<b>CROWS</b></a><span class="chain"><i></i>Built on Robinhood Chain</span></div>
+      <div class="links"><a href="whitelist">Whitelist</a><a href="#mining">Mining</a><a href="#token">$PEBBLE</a><a href="#faq">FAQ</a><a id="footX" href="#" target="_blank" rel="noopener" hidden>X</a></div>
+    </div>
+    <div class="big-word" aria-hidden="true">PEBBLE CROWS</div>
+    <div class="legal"><span>Pebble Crows is an independent project and is not affiliated with or endorsed by Robinhood.</span><span>Details may be adjusted before launch.</span></div>
+  </div>
+</footer>
+
+<script src="config.js"></script>
+<script src="crows.js"></script>
+<script src="pixels.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

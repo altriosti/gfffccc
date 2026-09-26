@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>if (/\.html$/.test(location.pathname)) history.replaceState(null, "", location.pathname.replace(/\.html$/, "") + location.search + location.hash);</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join the Whitelist · Pebble Crows</title>
+<meta name="description" content="Join the Pebble Crows whitelist. Whitelisted wallets find their first pebble instantly.">
+<meta property="og:title" content="Pebble Crows Whitelist">
+<meta property="og:description" content="Six quick steps. No signature, no transaction. Whitelisted wallets find their first pebble instantly.">
+<meta property="og:image" content="og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="og.png">
+<meta name="theme-color" content="#ccff00">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js"}}</script>
+</head>
+<body class="wl-page">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-go" viewBox="0 0 8 7"><rect x="0" y="3" width="7" height="1"/><rect x="4" y="0" width="1" height="1"/><rect x="5" y="1" width="1" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="7" y="3" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="4" y="6" width="1" height="1"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 7 7"><rect x="2" y="0" width="5" height="1"/><rect x="6" y="0" width="1" height="5"/><rect x="5" y="1" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/></symbol>
+  <symbol id="i-down" viewBox="0 0 7 8"><rect x="3" y="0" width="1" height="7"/><rect x="0" y="4" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="3" y="7" width="1" height="1"/><rect x="4" y="6" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 8 8"><rect x="0" y="1" width="3" height="2"/><rect x="3" y="3" width="2" height="2"/><rect x="5" y="1" width="2" height="2"/><rect x="6" y="0" width="2" height="4"/><rect x="0" y="5" width="3" height="2"/><rect x="5" y="5" width="2" height="2"/><rect x="6" y="4" width="2" height="4"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="bar">
+    <a class="brand" href="./"><canvas id="logo" class="px" width="24" height="24"></canvas>PEBBLE<b>CROWS</b></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="./">Home</a>
+      <a href="./#mining">How it works</a>
+      <a href="./#faq">FAQ</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+    <i class="progressbar" id="progressbar"></i>
+  </div>
+</header>
+
+<main class="wl lime-bg">
+  <div class="wrap">
+    <div class="wl-top">
+      <span class="tag" id="flockTag"><i></i>Whitelist</span>
+      <h1>Join the flock.</h1>
+      <p>Six quick steps. No signature, no transaction, no cost.</p>
+    </div>
+
+    <ol class="progress" id="progress">
+      <li data-p="1"><i>1</i><span>Follow</span></li>
+      <li data-p="2"><i>2</i><span>Like</span></li>
+      <li data-p="3"><i>3</i><span>Repost</span></li>
+      <li data-p="4"><i>4</i><span>Comment</span></li>
+      <li data-p="5"><i>5</i><span>Wallet</span></li>
+      <li data-p="6"><i>6</i><span>Done</span></li>
+    </ol>
+
+    <div class="wl-grid">
+      <aside class="guide">
+        <div class="wl-stage" id="wlStage">
+          <div class="fallback"><canvas id="wlFallback" class="px" width="24" height="24"></canvas></div>
+        </div>
+        <div class="bubble" id="bubble" aria-live="polite">Caw! Help me fill the pitcher.</div>
+      </aside>
+
+      <div class="panel">
+
+        <section class="wstep" data-step="0" hidden>
+          <div class="k">Coming soon</div>
+          <h2>The whitelist opens soon</h2>
+          <p>The crows are still gathering. Please check back shortly.</p>
+          <div class="actions"><a class="btn lime" href="./">Back to home</a></div>
+        </section>
+
+        <section class="wstep" data-step="1" hidden>
+          <div class="k">Step 1 of 6</div>
+          <h2>Follow us on X</h2>
+          <p>Follow <b class="handle">our account</b> so you never miss the mint.</p>
+          <div class="actions"><a class="btn lime open-x" data-open="follow" target="_blank" rel="noopener" href="#">Open <span class="handle">X</span> <svg class="ico"><use href="#i-ext"/></svg></a></div>
+          <div class="ask">
+            <p class="q">Did you follow?</p>
+            <div class="actions">
+              <button class="btn white" id="followYes">Yes, I followed</button>
+              <button class="btn ghost" id="followNo">No</button>
+            </div>
+          </div>
+          <p class="msg" id="msg1" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="2" hidden>
+          <div class="k">Step 2 of 6</div>
+          <h2>Like the post</h2>
+          <p>Open our whitelist post and tap the heart.</p>
+          <div class="actions"><a class="btn cyan open-post" data-open="like" target="_blank" rel="noopener" href="#">Open the post <svg class="ico"><use href="#i-ext"/></svg></a></div>
+          <div class="actions"><button class="btn white confirm" data-need="like" data-next="3">I liked the post</button><button class="btn ghost back" data-back="1">Back</button></div>
+          <p class="msg" id="msg2" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="3" hidden>
+          <div class="k">Step 3 of 6</div>
+          <h2>Repost it</h2>
+          <p>Repost the same post so more crows can find the pitcher.</p>
+          <div class="actions"><a class="btn cyan open-post" data-open="repost" target="_blank" rel="noopener" href="#">Open the post <svg class="ico"><use href="#i-ext"/></svg></a></div>
+          <div class="actions"><button class="btn white confirm" data-need="repost" data-next="4">I reposted it</button><button class="btn ghost back" data-back="2">Back</button></div>
+          <p class="msg" id="msg3" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="4" hidden>
+          <div class="k">Step 4 of 6</div>
+          <h2>Comment and tag 3 friends</h2>
+          <p>Reply to the post and tag three friends. Then copy the link to your comment and paste it below.</p>
+          <div class="actions"><a class="btn cyan open-post" data-open="comment" target="_blank" rel="noopener" href="#">Open the post <svg class="ico"><use href="#i-ext"/></svg></a></div>
+          <label class="field">
+            <span>Your comment link</span>
+            <input id="link" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://x.com/yourname/status/1234567890">
+            <small>On your comment, tap Share, then Copy link.</small>
+          </label>
+          <div class="actions"><button class="btn white" id="linkNext">Continue</button><button class="btn ghost back" data-back="3">Back</button></div>
+          <p class="msg" id="msg4" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="5" hidden>
+          <div class="k">Step 5 of 6</div>
+          <h2>Your details</h2>
+          <p>Where should the crow bring your pebble?</p>
+          <form id="form" novalidate>
+            <label class="field">
+              <span>ETH wallet address</span>
+              <input id="wallet" type="text" autocomplete="off" spellcheck="false" placeholder="0x..." maxlength="42">
+            </label>
+            <label class="field">
+              <span>X username</span>
+              <div class="at"><b>@</b><input id="xuser" type="text" autocomplete="off" spellcheck="false" placeholder="yourname" maxlength="16"></div>
+            </label>
+            <label class="hp" aria-hidden="true">Website<input id="website" type="text" tabindex="-1" autocomplete="off"></label>
+            <p class="safe">We will never ask for your seed phrase, a signature or a transaction.</p>
+            <div class="actions"><button class="btn lime" id="submit" type="submit">Join the whitelist <svg class="ico go"><use href="#i-go"/></svg></button><button class="btn ghost back" type="button" data-back="4">Back</button></div>
+            <div class="work" id="work" hidden><div class="wbar"><i id="workBar"></i></div><span id="workText">The crow is carrying your pebble...</span></div>
+            <p class="msg" id="msg5" role="alert"></p>
+          </form>
+        </section>
+
+        <section class="wstep done" data-step="6" hidden>
+          <canvas class="px bell" id="bell"></canvas>
+          <div class="k">Step 6 of 6</div>
+          <h2>You are on the whitelist!</h2>
+          <p>Wallet <b id="doneWallet"></b> is saved. Your first pebble will be found instantly.</p>
+          <div class="notify">
+            <span class="ring">&#128276;</span>
+            <p>Watch our X for the mint announcement. Turn on notifications for <b class="handle">our account</b> so you do not miss it.</p>
+          </div>
+          <div class="actions">
+            <a class="btn lime open-x" target="_blank" rel="noopener" href="#">Turn on notifications <svg class="ico"><use href="#i-ext"/></svg></a>
+            <a class="btn red" id="share" target="_blank" rel="noopener" href="#">Share on X</a>
+          </div>
+          <div class="actions"><a class="link" href="./">Back to home</a></div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <div><a class="brand" href="./"><canvas id="logo2" class="px" width="24" height="24"></canvas>PEBBLE<b>CROWS</b></a><span class="chain"><i></i>Built on Robinhood Chain</span></div>
+      <div class="links"><a href="./">Home</a><a href="./#faq">FAQ</a></div>
+    </div>
+    <div class="legal"><span>Pebble Crows is an independent project and is not affiliated with or endorsed by Robinhood.</span><span>Details may be adjusted before launch.</span></div>
+  </div>
+</footer>
+
+<script src="config.js"></script>
+<script src="crows.js"></script>
+<script src="pixels.js"></script>
+<script src="whitelist.js"></script>
+</body>
+</html>
