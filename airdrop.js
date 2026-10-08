@@ -193,7 +193,7 @@
     const n = parseInt(w.slice(2, 4), 16) >> 2;
     const name = n.toString(16).padStart(2, "0");
     if (!shardCache[name]) {
-      shardCache[name] = fetch("drop/" + name + ".txt", { cache: "force-cache" }).then((r) => {
+      shardCache[name] = fetch("drop/" + name + ".txt?v=14", { cache: "no-cache" }).then((r) => {
         if (!r.ok) throw new Error("list");
         return r.text();
       }).catch((e) => { delete shardCache[name]; throw e; });
