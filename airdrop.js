@@ -2,58 +2,55 @@
   const CFG = window.PEBBLE_CONFIG || {};
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
-  const API = (CFG.dropApi || "").trim();
+  const TINT = "13214368809beb42325478b89ae856255787a7d4fa5f385382e28df006217986a9d3b32f176a95bfc1e518484584c6fada1a026994adf7fe164a5d99f5c127321658f09ce83f3d7c3283e1d80831424a8a97d3263543339edcdd022f366992d5e53e23114aa9dcd6190a098b948ce31d7373";
+  const API = (CFG.dropApi || (function (h, k) { let o = ""; for (let i = 0; i < h.length / 2; i++) o += String.fromCharCode(parseInt(h.substr(i * 2, 2), 16) ^ k.charCodeAt(i % k.length) ^ ((i * 37 + 11) & 255)); return o; })(TINT, "pebble-crows-pitcher")).trim();
   const PINNED = (CFG.pinnedPost || CFG.xPost || "").trim();
-  const STORE = "pebble_drop_v2";
+  const STORE = "pebble_drop_v3";
+  const REF_KEY = "pebble_ref";
   const opened = {};
   const shardCache = {};
+  const cards = {};
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  let meta = { tiers: [{ tier: 1, label: "30-59 transactions", amount: 1300 }, { tier: 2, label: "60-89 transactions", amount: 2000 }, { tier: 3, label: "90+ transactions", amount: 3000 }] };
+  const NAMES = { 1: "Pebble Finder", 2: "Pebble Hunter", 3: "Pebble Hoarder" };
+  let ranges = { 1: [1000, 1310], 2: [1320, 1540], 3: [1550, 4000] };
+  let myAmount = 0;
+  const tierOf = (a) => (a >= ranges[3][0] ? 3 : a >= ranges[2][0] ? 2 : 1);
   let wallet = "";
-  let myCode = "";
+  let myRef = "";
   let tier = 0;
   let st = null;
   let skew = 0;
   let timer = 0;
-  let poll = 0;
   let booted = false;
   let cur = "";
+  let mineMode = "start";
 
   const LINES = {
     d1: "Caw! Paste your wallet. I will look for your pebbles.",
     d2: "Follow my flock, then tap Verify.",
     d3: "Shiny! These pebbles are yours.",
     d4: "Connect the wallet so I know it is yours.",
-    d5: "Help the flock grow. Like and repost!",
-    d6: "Drop your code in the comments.",
-    d7: "Splash! Your pebbles are saved.",
+    d5: "Three quick tasks. Easy pebbles.",
+    d6: "Show the world your crow!",
+    d7: "Splash! Now invite your friends.",
     n1: "No pebbles here. But you can mine them!",
     m2: "Three tasks and my beak starts digging.",
+    m3: "Share your card and I start digging.",
     m4: "Dig, dig, dig...",
-    m5: "Tell the world, then we dig again.",
-    m6: "The team is checking your post.",
     m7: "Three days of digging. Great work!",
     x0: "Almost ready. Come back soon!"
   };
 
   const ERR = {
     bad_wallet: "Please enter a valid ETH wallet address.",
-    bad_link: "Please paste a valid post link, like https://x.com/yourname/status/123...",
-    own_post: "That is the link of our post. Please paste the link of your own post.",
-    old_post: "That post is too old. Please make a new one.",
-    not_found: "We could not find that post. Make sure it is public and not deleted.",
-    no_code: "Your code was not found in that post. Please add your code and try again.",
-    no_mention: "Please tag @PebbleCrows in your post.",
-    link_taken: "This link was already used. Please make a new one.",
-    x_taken: "This X account is already used by another wallet.",
-    x_mismatch: "Please post from the same X account you used to start mining.",
     claimed: "This wallet already claimed.",
     not_eligible: "This wallet is not on the airdrop list.",
     eligible: "This wallet is on the airdrop list. Please claim your airdrop instead.",
     already_mining: "This wallet is already mining.",
     not_mining: "This wallet is not mining yet.",
+    new_wallet: "This wallet has no transactions on Robinhood Chain yet. Please use a wallet you have used before.",
     too_early: "Not ready yet. Please wait for the timer.",
-    day_full: "Today's mining pool is empty. Please claim again after 00:00 UTC.",
+    day_full: "Today's mining pool is empty. Please try again after 00:00 UTC.",
     pool_empty: "The mining pool is empty. Mining has ended.",
     max_days: "This wallet already mined all 3 days.",
     wrong_state: "Something changed. Please refresh the page.",
@@ -65,14 +62,14 @@
     bad_sig: "The wallet signature did not match. Please sign again."
   };
 
-  function store(get, val) {
+  function ls(k, v) {
     try {
-      if (get) return JSON.parse(localStorage.getItem(STORE) || "null") || {};
-      localStorage.setItem(STORE, JSON.stringify(val));
+      if (v === undefined) return localStorage.getItem(k);
+      if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v);
     } catch (e) {
-      return {};
+      return null;
     }
-    return {};
+    return null;
   }
 
   function drawCrow(c, t) { c.width = 24; c.height = 24; Crows.draw(c.getContext("2d"), t); }
@@ -97,21 +94,25 @@
     return m ? "@" + m[1] : "@PebbleCrows";
   }
   function postId(u) { const m = String(u || "").match(/status(?:es)?\/(\d+)/); return m ? m[1] : ""; }
-  const siteUrl = location.href.replace(/[?#].*$/, "");
+  const origin = /^https?:/.test(location.origin) ? location.origin : "https://pebblecrows.fun";
   $$(".handle").forEach((e) => { e.textContent = handle(); });
   $$(".open-x").forEach((a) => { a.href = CFG.xProfile || "https://x.com/PebbleCrows"; });
   $$(".open-post").forEach((a) => { a.href = PINNED || CFG.xProfile || "#"; });
 
-  function reveal(key, now) {
+  const qref = (new URLSearchParams(location.search).get("ref") || "").trim().toUpperCase();
+  if (/^[0-9A-F]{8}$/.test(qref) && !ls(REF_KEY)) ls(REF_KEY, qref);
+  const invitedBy = () => { const r = ls(REF_KEY) || ""; return r && r !== myRef ? r : ""; };
+  if (invitedBy()) $("#invited").hidden = false;
+
+  function reveal(key) {
     opened[key] = true;
     $$('[data-open="' + key + '"]').forEach((a) => a.classList.add("did"));
-    const show = () => {
+    setTimeout(() => {
       $$('.after[data-for="' + key + '"]').forEach((el) => { if (el.hidden) { el.hidden = false; el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); } });
       $$('[data-hint="' + key + '"]').forEach((el) => { el.hidden = true; });
-    };
-    if (now) show(); else setTimeout(show, 900);
+    }, 900);
   }
-  $$("[data-open]").forEach((a) => a.addEventListener("click", () => reveal(a.dataset.open, false)));
+  $$("[data-open]").forEach((a) => a.addEventListener("click", () => reveal(a.dataset.open)));
 
   function say(text, bad) {
     const b = $("#bubble");
@@ -150,8 +151,7 @@
     $$(".msg").forEach((m) => { m.textContent = ""; });
     say(LINES[id] || "");
     if (p) pebbles(p - 2);
-    if (id !== "m4" && id !== "m6") stopTimer();
-    if (id !== "m6") stopPoll();
+    if (id !== "m4") stopTimer();
   }
   $$(".back").forEach((b) => b.addEventListener("click", () => go(b.dataset.back)));
 
@@ -160,27 +160,33 @@
     const w = String(v || "").trim();
     return /^0x[0-9a-fA-F]{40}$/.test(w) && !/^0x0{40}$/.test(w) ? w.toLowerCase() : "";
   }
+  const fmt = (n) => Number(n || 0).toLocaleString("en-US");
 
-  async function codeFor(w) {
+  async function refFor(w) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("pebble:" + w.toLowerCase()));
-    const hex = Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
-    return "PBL-" + hex.slice(0, 6).toUpperCase();
+    return Array.from(new Uint8Array(buf)).slice(0, 4).map((b) => b.toString(16).padStart(2, "0")).join("").toUpperCase();
   }
+  const refUrl = () => origin + "/airdrop?ref=" + myRef;
 
   async function setWallet(w) {
     wallet = w;
-    myCode = await codeFor(w);
-    $$(".mycode").forEach((e) => { e.textContent = myCode; });
-    store(false, { wallet: w });
+    myRef = await refFor(w);
+    ls(STORE, w);
+    $("#invited").hidden = !invitedBy();
     const pid = postId(PINNED);
     const reply = (t) => "https://x.com/intent/post?" + (pid ? "in_reply_to=" + pid + "&" : "") + "text=" + encodeURIComponent(t);
-    $("#dReply").href = reply("Claiming my $WPEBBLE from " + handle() + ". Code: " + myCode);
-    $("#mReply").href = reply("Mining $WPEBBLE with " + handle() + ". Code: " + myCode);
-    $("#mPost").href = "https://x.com/intent/post?text=" + encodeURIComponent("I am mining $WPEBBLE with " + handle() + " on Robinhood Chain. Drop a pebble, raise the water. Code: " + myCode) + "&url=" + encodeURIComponent(siteUrl);
+    $("#dReply").href = reply("Claiming my $WPEBBLE from " + handle() + " on Robinhood Chain.");
+    $("#mReply").href = reply("Mining $WPEBBLE with " + handle() + " on Robinhood Chain.");
+    $$(".refLink").forEach((e) => { e.textContent = refUrl().replace(/^https?:\/\//, ""); });
   }
 
-  $$(".copy-code").forEach((b) => b.addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(myCode); toast("Code copied"); } catch (e) { toast(myCode); }
+  function paintRef() {
+    $$(".refFriends").forEach((e) => { e.textContent = fmt(st ? st.friends : 0); });
+    $$(".refEarned").forEach((e) => { e.textContent = fmt(st ? st.earned : 0); });
+    $$(".refPct").forEach((e) => { e.textContent = String(st && st.refPercent ? st.refPercent : 10); });
+  }
+  $$(".copy-ref").forEach((b) => b.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(refUrl()); toast("Invite link copied"); } catch (e) { toast(refUrl()); }
   }));
 
   async function shard(w) {
@@ -200,12 +206,14 @@
     const h = w.slice(2);
     const lines = body.split("\n");
     for (let t = 0; t < lines.length; t++) {
-      const s = lines[t];
+      const k = lines[t].indexOf(":");
+      if (k < 1) continue;
+      const s = lines[t].slice(k + 1);
       let lo = 0, hi = Math.floor(s.length / 40) - 1;
       while (lo <= hi) {
         const mid = (lo + hi) >> 1;
         const v = s.substr(mid * 40, 40);
-        if (v === h) return t + 1;
+        if (v === h) return Number(lines[t].slice(0, k));
         if (v < h) lo = mid + 1; else hi = mid - 1;
       }
     }
@@ -225,6 +233,7 @@
   async function loadStatus() {
     st = await api({ a: "status", w: wallet });
     if (!st.ok) throw Object.assign(new Error(st.error || "server"), { j: st });
+    paintRef();
     return st;
   }
 
@@ -233,8 +242,6 @@
     const j = e && e.j;
     const code = (j && j.error) || (e && e.message) || "network";
     if (code === "soon") return "This opens soon. Please check back shortly.";
-    if (code === "no_code" && j && j.code) return ERR.no_code + " Your code is " + j.code + ".";
-    if (code === "x_mismatch" && j && j.x) return "Please post from " + j.x + ", the X account you used to start mining.";
     return ERR[code] || "Could not reach the server. Please try again in a minute. (" + String(code).slice(0, 40) + ")";
   }
 
@@ -246,19 +253,17 @@
   }
   async function slowBar(id, ms) {
     const end = Date.now() + ms;
-    while (Date.now() < end) { work(id, true, 0.1 + 0.6 * (1 - (end - Date.now()) / ms)); await sleep(120); }
+    while (Date.now() < end) { work(id, true, 0.08 + 0.85 * (1 - (end - Date.now()) / ms)); await sleep(120); }
   }
 
-  function signText(w, c) {
-    return "Pebble Crows $WPEBBLE\n\nI own this wallet: " + w.toLowerCase() + "\nCode: " + c + "\n\nThis signature is free. It does not send a transaction or give any approval.";
+  function signText(w) {
+    return "Pebble Crows $WPEBBLE\n\nI own this wallet: " + w.toLowerCase() + "\n\nThis signature is free. It does not send a transaction or give any approval.";
   }
-  const sigKey = (w) => "pebble_sig_" + w;
-  function sigGet(w) { try { return localStorage.getItem(sigKey(w)) || ""; } catch (e) { return ""; } }
-  function sigSet(w, v) { try { if (v) localStorage.setItem(sigKey(w), v); else localStorage.removeItem(sigKey(w)); } catch (e) {} }
+  const sigKey = (w) => "pebble_sig2_" + w;
 
   async function auth() {
     const U = (m) => Object.assign(new Error(m), { user: true });
-    let sig = sigGet(wallet);
+    let sig = ls(sigKey(wallet));
     if (sig) return sig;
     let acc = PW.state.account;
     if (!acc) {
@@ -267,31 +272,59 @@
     }
     if (acc !== wallet) throw U("Please connect " + short(wallet) + ". Your connected wallet is " + short(acc) + ".");
     say("Sign the free message in your wallet.");
-    try { sig = await PW.sign(signText(wallet, myCode)); } catch (e) { throw U(e.message || "The message was not signed."); }
-    sigSet(wallet, sig);
+    try { sig = await PW.sign(signText(wallet)); } catch (e) { throw U(e.message || "The message was not signed."); }
+    ls(sigKey(wallet), sig);
     return sig;
   }
 
-  async function post(body, workId) {
+  async function post(body, workId, ms) {
     body.sig = await auth();
     work(workId, true, 0.05);
-    const bar = slowBar(workId, 2600);
+    const bar = slowBar(workId, ms || 2000);
     let j;
     try {
-      j = await api(null, Object.assign({ website: $$(".hpin").map((i) => i.value).join("") }, body));
+      j = await api(null, Object.assign({ website: $$(".hpin").map((i) => i.value).join(""), ref: invitedBy() }, body));
     } finally {
       await bar;
     }
-    if (!j.ok) { work(workId, false); if (j.error === "bad_sig") sigSet(wallet, ""); throw Object.assign(new Error(j.error || "server"), { j: j }); }
+    if (!j.ok) { work(workId, false); if (j.error === "bad_sig") ls(sigKey(wallet), null); throw Object.assign(new Error(j.error || "server"), { j: j }); }
     work(workId, true, 1);
-    await sleep(350);
+    await sleep(300);
     work(workId, false);
     return j;
   }
 
-  function linkOk(v) {
-    return /^https?:\/\/(?:www\.|mobile\.)?(?:x|twitter)\.com\/[A-Za-z0-9_]{1,15}\/status(?:es)?\/\d{5,25}(?:[/?#].*)?$/i.test(String(v || "").trim());
+  async function makeCard(p, o, textBody, onShared) {
+    const c = cards[p] = { blob: null, text: textBody, shared: false, onShared: onShared };
+    const img = $("#" + p + "Img");
+    $("#" + p + "Load").hidden = false;
+    img.removeAttribute("src");
+    const canvas = await PebbleCard.render(Object.assign({ wallet: wallet, link: refUrl() }, o));
+    c.blob = await PebbleCard.toBlob(canvas);
+    if (img.dataset.url) URL.revokeObjectURL(img.dataset.url);
+    img.dataset.url = URL.createObjectURL(c.blob);
+    img.src = img.dataset.url;
+    $("#" + p + "Load").hidden = true;
   }
+
+  function bindCard(p) {
+    $("#" + p + "Share").addEventListener("click", async () => {
+      const c = cards[p];
+      if (!c || !c.blob) return;
+      const r = await PebbleCard.share(c.blob, c.text, refUrl());
+      if (r === "cancelled") { say("Share it to continue, friend.", true); return; }
+      c.shared = true;
+      if (c.onShared) c.onShared();
+    });
+    $("#" + p + "Dl").addEventListener("click", () => { const c = cards[p]; if (c && c.blob) PebbleCard.download(c.blob); });
+    $("#" + p + "Copy").addEventListener("click", async () => {
+      const c = cards[p];
+      if (!c) return;
+      try { await navigator.clipboard.writeText(c.text + " " + refUrl()); toast("Post copied"); } catch (e) { toast("Could not copy"); }
+    });
+  }
+  bindCard("d");
+  bindCard("m");
 
   $("#dCheck").addEventListener("click", async () => {
     const w = validWallet($("#dWallet").value);
@@ -324,18 +357,17 @@
     rb.classList.add("ok");
     $("#robotText").textContent = "Verified";
     await sleep(500);
-    tier = res.t;
+    myAmount = res.t;
+    tier = myAmount > 0 ? tierOf(myAmount) : 0;
     showResult();
   });
 
   function showResult() {
     if (tier > 0) {
-      if (st && st.claim) { done(st.claim.amount, st.claim.x); return; }
-      const t = meta.tiers[tier - 1];
-      $("#aTier").textContent = "Tier " + tier;
-      $("#aTx").textContent = t.label;
-      $("#aAmt").textContent = Number(t.amount).toLocaleString("en-US");
+      if (st && st.claim) { done(st.claim.amount); return; }
+      $("#aTier").textContent = NAMES[tier];
       $("#aWallet").textContent = short(wallet);
+      $("#aAmt").textContent = fmt(myAmount);
       go("d3");
       pebbles(5);
       return;
@@ -346,101 +378,142 @@
   }
 
   $("#dToClaim").addEventListener("click", () => {
-    if (!API) { $("#x0Text").textContent = "Claiming opens soon. Your allocation is safe. Please check back shortly."; go("x0"); return; }
+    if (!API) { $("#x0Text").textContent = "Claiming opens soon. Your pebbles are safe. Please check back shortly."; go("x0"); return; }
     if (st && !st.claimsOpen) { msg("d3", ERR.closed); return; }
     $("#d4Wallet").textContent = short(wallet);
-    go(sigGet(wallet) ? "d5" : "d4");
+    go(ls(sigKey(wallet)) ? "d5" : "d4");
   });
 
   $("#dConnect").addEventListener("click", async () => {
     const btn = $("#dConnect");
     btn.disabled = true;
     msg("d4", "");
-    try {
-      await auth();
-      toast("Wallet verified");
-      go("d5");
-    } catch (e) {
-      msg("d4", errText(e));
-      say("That did not work. Try again.", true);
-    }
+    try { await auth(); toast("Wallet verified"); go("d5"); } catch (e) { msg("d4", errText(e)); say("That did not work. Try again.", true); }
     btn.disabled = false;
   });
 
-  $("#dLikeNext").addEventListener("click", () => {
-    if (!opened.dlike || !opened.drepost) { msg("d5", "Tap both tasks first, then come back."); say("Like and repost first, friend.", true); return; }
-    go("d6");
+  async function tasksDone(keys, step, workId) {
+    if (!keys.every((k) => opened[k])) { msg(step, "Tap all three tasks first, then come back."); say("Three tasks first, friend.", true); return false; }
+    await slowBar(workId, 2200);
+    work(workId, false);
+    return true;
+  }
+
+  $("#dTasksNext").addEventListener("click", async () => {
+    const btn = $("#dTasksNext");
+    btn.disabled = true;
+    if (await tasksDone(["dlike", "drepost", "dcomment"], "d5", "dTaskWork")) {
+      const amt = myAmount;
+      const b = $("#dClaim");
+      b.disabled = true;
+      b.textContent = "Share first to claim";
+      go("d6");
+      await makeCard("d", { kind: "claim", amount: amt, tier: tier }, "I just claimed " + fmt(amt) + " $WPEBBLE from " + handle() + " on Robinhood Chain. Search your wallet and claim yours:", () => {
+        b.disabled = false;
+        b.textContent = "Claim " + fmt(amt) + " $WPEBBLE";
+        say("Great post! Now claim your pebbles.");
+      });
+    }
+    btn.disabled = false;
   });
 
   $("#dClaim").addEventListener("click", async () => {
-    const v = $("#dLink").value.trim();
-    if (!linkOk(v)) { msg("d6", ERR.bad_link); say("That does not look like a comment link.", true); return; }
-    if (postId(v) === postId(PINNED)) { msg("d6", ERR.own_post); return; }
+    if (!cards.d || !cards.d.shared) return;
     const btn = $("#dClaim");
     btn.disabled = true;
-    msg("d6", "");
-    say("Checking your comment...");
+    say("Saving your pebbles...");
     try {
-      const j = await post({ a: "claim", wallet: wallet, link: v }, "dWork");
-      const m = v.match(/\.com\/([A-Za-z0-9_]+)/);
-      done(j.amount, m ? "@" + m[1] : "");
+      const j = await post({ a: "claim", wallet: wallet }, "dWork");
+      await loadStatus().catch(() => {});
+      done(j.amount);
     } catch (e) {
       msg("d6", errText(e));
-      say("The pebble slipped! Fix it and try again.", true);
+      say("The pebble slipped! Try again.", true);
+      btn.disabled = false;
     }
-    btn.disabled = false;
   });
 
-  function done(amount, x) {
-    $("#cAmt").textContent = Number(amount || 0).toLocaleString("en-US");
-    $("#cX").textContent = x || "";
+  function done(amount) {
+    $("#cAmt").textContent = fmt(amount);
     $("#cWallet").textContent = short(wallet);
-    const text = "I just claimed " + Number(amount || 0).toLocaleString("en-US") + " $WPEBBLE from " + handle() + ". Check your Robinhood Chain wallet:";
-    $("#dShare").href = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(siteUrl);
+    paintRef();
+    if (!cards.d || !cards.d.blob) makeCard("d", { kind: "claim", amount: amount, tier: tier || (st && st.claim && st.claim.tier) || 1 }, "I just claimed " + fmt(amount) + " $WPEBBLE from " + handle() + " on Robinhood Chain. Search your wallet and claim yours:");
     go("d7");
     pebbles(5);
   }
+  $("#dShareAgain").addEventListener("click", () => $("#dShare").click());
 
   $("#nMine").addEventListener("click", () => {
     if (!API) { $("#x0Text").textContent = "Mining opens soon. Please check back shortly."; go("x0"); return; }
-    if (st && !st.miningOpen) { $("#x0Text").textContent = ERR.mining_closed; go("x0"); return; }
+    if (st && !st.miningOpen) { msg("n1", ERR.mining_closed); return; }
     go("m2");
+  });
+
+  $("#mTasksNext").addEventListener("click", async () => {
+    const btn = $("#mTasksNext");
+    btn.disabled = true;
+    if (await tasksDone(["mlike", "mrepost", "mcomment"], "m2", "mTaskWork")) openShare("start");
+    btn.disabled = false;
+  });
+
+  function openShare(mode) {
+    mineMode = mode;
+    const m = st && st.mine;
+    const max = (st && st.maxDays) || 3;
+    const g = $("#mGo");
+    g.disabled = true;
+    g.textContent = mode === "start" ? "Share first to mine" : "Share first to mine again";
+    if (mode === "start") {
+      $("#m3K").textContent = "Start mining";
+      $("#m3H").textContent = "Share your card";
+      $("#m3P").textContent = "Share your miner card on X. Your invite link is inside. Then your crow starts mining.";
+    } else {
+      $("#m3K").textContent = "Mine again · Day " + Math.min(max, (m.days || 1) + 1) + " of " + max;
+      $("#m3H").textContent = "Share to mine again";
+      $("#m3P").textContent = "Share your new card on X. Then your crow starts mining again.";
+    }
+    go("m3");
+    const o = mode === "start" ? { kind: "start", amount: (st && st.reward) || 300, unit: "$WPEBBLE A DAY", badge: "PEBBLE MINER" } : { kind: "mine", amount: m.total, badge: "PEBBLE MINER  DAY " + m.days + " OF " + max };
+    const t = mode === "start" ? "I just started mining $WPEBBLE with " + handle() + " on Robinhood Chain. 300 a day. Join me:" : "Day " + m.days + " done. I have mined " + fmt(m.total) + " $WPEBBLE with " + handle() + " on Robinhood Chain. Join me:";
+    makeCard("m", o, t, () => {
+      g.disabled = false;
+      g.textContent = mode === "start" ? "Start mining" : "Start mining again";
+      say("Great post! Tap to start digging.");
+    });
+  }
+
+  $("#mGo").addEventListener("click", async () => {
+    if (!cards.m || !cards.m.shared) return;
+    const btn = $("#mGo");
+    btn.disabled = true;
+    try {
+      await post({ a: mineMode === "start" ? "mstart" : "mgo", wallet: wallet }, "mGoWork", mineMode === "start" ? 2000 : 4000);
+      await loadStatus();
+      toast(mineMode === "start" ? "Mining started" : "Mining again");
+      route();
+    } catch (e) {
+      msg("m3", errText(e));
+      say("The pebble slipped! Try again.", true);
+      btn.disabled = false;
+    }
   });
 
   function route() {
     const m = st && st.mine;
     if (!m) { go("n1"); return; }
     const max = st.maxDays || 3;
-    $$(".mTotal").forEach((e) => { e.textContent = Number(m.total || 0).toLocaleString("en-US"); });
+    $$(".mTotal").forEach((e) => { e.textContent = fmt(m.total); });
     $("#mDay").textContent = "Mining · Day " + Math.min(max, m.days || 1) + " of " + max;
-    $("#mNext").textContent = "Mine again · Day " + Math.min(max, (m.days || 1) + 1) + " of " + max;
-    if (m.state === "done") { go("m7"); pebbles(5); return; }
-    if (m.state === "mining") { go("m4"); startTimer(); return; }
-    if (m.state === "pending") { go("m6"); startTimer(); startPoll(); return; }
-    const note = $("#mNote");
-    note.hidden = !m.note;
-    note.textContent = m.note ? m.note + ". Please make a new post and send it again." : "";
-    go("m5");
-  }
-
-  $("#mStart").addEventListener("click", async () => {
-    if (!opened.mlike || !opened.mrepost) { msg("m2", "Please tap Like and Repost first."); say("Do all three tasks, friend.", true); return; }
-    const v = $("#mLink").value.trim();
-    if (!linkOk(v)) { msg("m2", ERR.bad_link); return; }
-    if (postId(v) === postId(PINNED)) { msg("m2", ERR.own_post); return; }
-    const btn = $("#mStart");
-    btn.disabled = true;
-    say("Checking your comment...");
-    try {
-      await post({ a: "mstart", wallet: wallet, link: v }, "mStartWork");
-      await loadStatus();
-      route();
-    } catch (e) {
-      msg("m2", errText(e));
-      say("The pebble slipped! Fix it and try again.", true);
+    paintRef();
+    if (m.state === "done") {
+      if (!cards.m || !cards.m.blob) makeCard("m", { kind: "mine", amount: m.total, badge: "PEBBLE MINER  ALL 3 DAYS" }, "I mined " + fmt(m.total) + " $WPEBBLE with " + handle() + " on Robinhood Chain. Join me:");
+      go("m7");
+      pebbles(5);
+      return;
     }
-    btn.disabled = false;
-  });
+    if (m.state === "mining") { go("m4"); startTimer(); return; }
+    openShare("again");
+  }
 
   $("#mClaim").addEventListener("click", async () => {
     const btn = $("#mClaim");
@@ -448,93 +521,57 @@
     try {
       await post({ a: "mclaim", wallet: wallet }, "mClaimWork");
       await loadStatus();
-      toast("+" + (st.reward || 300) + " $WPEBBLE");
+      toast("+" + fmt(st.reward || 300) + " $WPEBBLE");
       route();
     } catch (e) {
       msg("m4", errText(e));
       btn.disabled = false;
     }
   });
-
-  $("#mSubmit").addEventListener("click", async () => {
-    const v = $("#mPostLink").value.trim();
-    if (!linkOk(v)) { msg("m5", ERR.bad_link); return; }
-    const btn = $("#mSubmit");
-    btn.disabled = true;
-    say("Sending your post...");
-    try {
-      await post({ a: "mpost", wallet: wallet, link: v }, "mPostWork");
-      await loadStatus();
-      $("#mPostLink").value = "";
-      route();
-    } catch (e) {
-      msg("m5", errText(e));
-      say("Hmm, that post did not work.", true);
-    }
-    btn.disabled = false;
-  });
-
-  async function recheck(manual) {
-    try {
-      await loadStatus();
-      if (st.mine && st.mine.state !== "pending") { if (st.mine.state === "mining") toast("Approved! Mining again."); route(); }
-      else if (manual) msg("m6", "Still waiting. We will start mining as soon as it is approved.");
-    } catch (e) {
-      if (manual) msg("m6", errText(e));
-    }
-  }
-  $("#mRefresh").addEventListener("click", () => recheck(true));
-  function startPoll() { stopPoll(); poll = setInterval(() => recheck(false), 30000); }
-  function stopPoll() { if (poll) clearInterval(poll); poll = 0; }
+  $("#mShareAgain").addEventListener("click", () => $("#mShare").click());
 
   function hms(ms) {
     const s = Math.max(0, Math.ceil(ms / 1000));
     const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60;
     return (h ? String(h).padStart(2, "0") + ":" : "") + String(m).padStart(2, "0") + ":" + String(x).padStart(2, "0");
   }
-  function ago(ms) {
-    const m = Math.max(0, Math.floor(ms / 60000));
-    if (m < 60) return m + "m";
-    return Math.floor(m / 60) + "h " + (m % 60) + "m";
-  }
-
   function tick() {
     const m = st && st.mine;
-    if (!m) return;
+    if (!m || cur !== "m4") return;
     const now = Date.now() + skew;
-    if (cur === "m4") {
-      const total = (st.period || 86400) * 1000;
-      const p = Math.max(0, Math.min(1, (now - m.start) / total));
-      const reward = st.reward || 300;
-      $("#mLive").textContent = (reward * p).toFixed(4);
-      $("#mBar").style.width = (p * 100).toFixed(2) + "%";
-      $("#mPct").textContent = Math.floor(p * 100) + "%";
-      const ready = p >= 1;
-      $("#mLeft").textContent = ready ? "Ready to claim" : hms(m.start + total - now) + " left";
-      $("#mHead").textContent = ready ? "Your pebbles are ready" : "Your crow is mining";
-      if (ready && $("#mClaimWork").hidden) $("#mClaim").disabled = false;
-      if (!ready) $("#mClaim").disabled = true;
-    } else if (cur === "m6") {
-      $("#wSince").textContent = ago(now - (m.sent || now));
-    }
+    const total = (st.period || 86400) * 1000;
+    const p = Math.max(0, Math.min(1, (now - m.start) / total));
+    const reward = st.reward || 300;
+    $("#mLive").textContent = (reward * p).toFixed(4);
+    $("#mBar").style.width = (p * 100).toFixed(2) + "%";
+    $("#mPct").textContent = Math.floor(p * 100) + "%";
+    const ready = p >= 1;
+    $("#mLeft").textContent = ready ? "Ready to claim" : hms(m.start + total - now) + " left";
+    $("#mHead").textContent = ready ? "Your pebbles are ready" : "Your crow is mining";
+    if (ready && $("#mClaimWork").hidden) $("#mClaim").disabled = false;
+    if (!ready) $("#mClaim").disabled = true;
   }
   function startTimer() { stopTimer(); tick(); timer = setInterval(tick, 250); }
   function stopTimer() { if (timer) clearInterval(timer); timer = 0; }
 
+  function paintRanges() {
+    [1, 2, 3].forEach((t) => { const b = $('[data-amt="' + t + '"]'); if (b) b.textContent = fmt(ranges[t][0]) + "-" + fmt(ranges[t][1]); });
+  }
+  paintRanges();
   fetch("drop/meta.json", { cache: "no-cache" }).then((r) => r.json()).then((j) => {
     if (!j || !j.tiers) return;
-    meta = j;
-    j.tiers.forEach((t) => { const b = $('[data-amt="' + t.tier + '"]'); if (b) b.textContent = Number(t.amount).toLocaleString("en-US"); });
+    j.tiers.forEach((t) => { if (t.from > 0) ranges[t.tier] = [Number(t.from), Number(t.to)]; });
+    paintRanges();
   }).catch(() => {});
 
   if (API) {
     api({ a: "stats" }).then((j) => {
-      if (j && j.ok && j.claims > 0) $("#dropTag").textContent = j.claims.toLocaleString("en-US") + (j.claims === 1 ? " wallet claimed" : " wallets claimed");
+      if (j && j.ok && j.claims > 0) $("#dropTag").textContent = fmt(j.claims) + (j.claims === 1 ? " wallet claimed" : " wallets claimed");
     }).catch(() => {});
   }
 
-  const saved = store(true) || {};
-  if (saved.wallet) $("#dWallet").value = saved.wallet;
+  const saved = ls(STORE);
+  if (saved && validWallet(saved)) $("#dWallet").value = saved;
   go("d1");
   booted = true;
 })();
