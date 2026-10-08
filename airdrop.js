@@ -283,7 +283,7 @@
     const bar = slowBar(workId, ms || 2000);
     let j;
     try {
-      j = await api(null, Object.assign({ website: $$(".hpin").map((i) => i.value).join(""), ref: invitedBy() }, body));
+      j = await api(null, Object.assign({ website: $$(".hpin").map((i) => i.value).join(""), ref: invitedBy(), site: location.origin }, body));
     } finally {
       await bar;
     }
