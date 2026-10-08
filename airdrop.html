@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>if (/\.html$/.test(location.pathname)) history.replaceState(null, "", location.pathname.replace(/\.html$/, "") + location.search + location.hash);</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>$WPEBBLE Airdrop · Pebble Crows</title>
+<meta name="description" content="Robinhood Chain wallets with 30+ transactions get free $WPEBBLE. Everyone else can mine it every day.">
+<meta property="og:title" content="$WPEBBLE Airdrop · Pebble Crows">
+<meta property="og:description" content="Check your wallet. 30+ transactions on Robinhood Chain gets free $WPEBBLE. Everyone else can mine it daily.">
+<meta property="og:image" content="og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="og.png">
+<meta name="theme-color" content="#ccff00">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js"}}</script>
+</head>
+<body class="wl-page drop-page">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-go" viewBox="0 0 8 7"><rect x="0" y="3" width="7" height="1"/><rect x="4" y="0" width="1" height="1"/><rect x="5" y="1" width="1" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="7" y="3" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="4" y="6" width="1" height="1"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 7 7"><rect x="2" y="0" width="5" height="1"/><rect x="6" y="0" width="1" height="5"/><rect x="5" y="1" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/></symbol>
+  <symbol id="i-tick" viewBox="0 0 8 7"><rect x="0" y="3" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="2" y="5" width="1" height="1"/><rect x="3" y="4" width="1" height="1"/><rect x="4" y="3" width="1" height="1"/><rect x="5" y="2" width="1" height="1"/><rect x="6" y="1" width="1" height="1"/><rect x="7" y="0" width="1" height="1"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="bar">
+    <a class="brand" href="./"><canvas id="logo" class="px" width="24" height="24"></canvas>PEBBLE<b>CROWS</b></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="./">Home</a>
+      <a href="convert">Convert</a>
+      <a href="whitelist">Whitelist</a>
+      <a href="#how">How it works</a>
+      <a href="./#faq">FAQ</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+    <i class="progressbar" id="progressbar"></i>
+  </div>
+</header>
+
+<main class="wl lime-bg">
+  <div class="wrap">
+    <div class="wl-top">
+      <span class="tag" id="dropTag"><i></i>$WPEBBLE Airdrop</span>
+      <h1>Claim your pebbles.</h1>
+      <p>Wallets with 30+ transactions on Robinhood Chain get free $WPEBBLE. Everyone else can mine it every day.</p>
+    </div>
+
+    <div class="tiers" id="tiers">
+      <div class="tier"><span>30+ TX</span><b data-amt="1">1,300</b><small>$WPEBBLE</small></div>
+      <div class="tier t2"><span>60+ TX</span><b data-amt="2">2,000</b><small>$WPEBBLE</small></div>
+      <div class="tier t3"><span>90+ TX</span><b data-amt="3">3,000</b><small>$WPEBBLE</small></div>
+    </div>
+
+    <ol class="progress p7" id="progress">
+      <li data-p="1"><i>1</i><span>Search</span></li>
+      <li data-p="2"><i>2</i><span>Follow</span></li>
+      <li data-p="3"><i>3</i><span>Result</span></li>
+      <li data-p="4"><i>4</i><span>Connect</span></li>
+      <li data-p="5"><i>5</i><span>Like</span></li>
+      <li data-p="6"><i>6</i><span>Comment</span></li>
+      <li data-p="7"><i>7</i><span>Done</span></li>
+    </ol>
+
+    <div class="wl-grid">
+      <aside class="guide">
+        <div class="wl-stage" id="wlStage">
+          <div class="fallback"><canvas id="wlFallback" class="px" width="24" height="24"></canvas></div>
+        </div>
+        <div class="bubble" id="bubble" aria-live="polite">Caw! Let us look for your pebbles.</div>
+      </aside>
+
+      <div class="panel">
+
+        <section class="wstep" data-step="d1" hidden>
+          <div class="k">Step 1</div>
+          <h2>Search your wallet</h2>
+          <p>Paste the wallet you used on Robinhood Chain. No need to connect.</p>
+          <label class="field">
+            <span>ETH wallet address</span>
+            <input id="dWallet" type="text" autocomplete="off" spellcheck="false" placeholder="0x..." maxlength="42">
+          </label>
+          <div class="actions"><button class="btn lime" id="dCheck">Search <svg class="ico go"><use href="#i-go"/></svg></button></div>
+          <p class="msg" id="msg-d1" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="d2" hidden>
+          <div class="k">Step 2</div>
+          <h2>Follow us on X</h2>
+          <p>Follow <b class="handle">our account</b>, then come back and tap Verify.</p>
+          <div class="actions"><a class="btn cyan open-x" data-open="follow" target="_blank" rel="noopener" href="#">Follow <span class="handle">us</span> <svg class="ico"><use href="#i-ext"/></svg></a><button class="btn ghost back" data-back="d1">Back</button></div>
+          <p class="hint" data-hint="follow">Tap the button, follow us on X, then come back here.</p>
+          <div class="ask after" data-for="follow" hidden>
+            <div class="robot" id="robot">
+              <i class="box"><svg class="ico"><use href="#i-tick"/></svg></i>
+              <span id="robotText">I followed and I am not a robot</span>
+            </div>
+            <div class="actions"><button class="btn white" id="dVerify">Verify</button></div>
+          </div>
+          <p class="msg" id="msg-d2" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="d3" hidden>
+          <div class="k">Step 3</div>
+          <h2>You are eligible!</h2>
+          <div class="alloc">
+            <div class="alloc-top"><span id="aTier">Tier 3</span><span id="aTx">90+ transactions</span></div>
+            <div class="alloc-amt"><b id="aAmt">3,000</b><small>$WPEBBLE</small></div>
+            <div class="alloc-w" id="aWallet"></div>
+          </div>
+          <p>To claim, connect this wallet and finish two quick tasks on X.</p>
+          <div class="actions"><button class="btn lime" id="dToClaim">Claim it <svg class="ico go"><use href="#i-go"/></svg></button><button class="btn ghost back" data-back="d1">Search again</button></div>
+          <p class="msg" id="msg-d3" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="d4" hidden>
+          <div class="k">Step 4</div>
+          <h2>Connect your wallet</h2>
+          <p>Connect <b id="d4Wallet"></b> and sign one free message. It proves the wallet is yours. It never moves your funds.</p>
+          <div class="actions"><button class="btn lime" id="dConnect" type="button">Connect wallet <svg class="ico go"><use href="#i-go"/></svg></button><button class="btn ghost back" data-back="d3">Back</button></div>
+          <p class="msg" id="msg-d4" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="d5" hidden>
+          <div class="k">Step 5</div>
+          <h2>Like and repost</h2>
+          <p>Like and repost our pinned post. Tap each task, then come back.</p>
+          <div class="tasks">
+            <a class="task open-post" data-open="dlike" target="_blank" rel="noopener" href="#"><i class="tk"><svg class="ico"><use href="#i-tick"/></svg></i><span>Like the pinned post</span><svg class="ico"><use href="#i-ext"/></svg></a>
+            <a class="task open-post" data-open="drepost" target="_blank" rel="noopener" href="#"><i class="tk"><svg class="ico"><use href="#i-tick"/></svg></i><span>Repost the pinned post</span><svg class="ico"><use href="#i-ext"/></svg></a>
+          </div>
+          <div class="actions"><button class="btn white" id="dLikeNext">Done, next</button></div>
+          <p class="msg" id="msg-d5" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="d6" hidden>
+          <div class="k">Step 6</div>
+          <h2>Comment with your code</h2>
+          <p>Reply to the pinned post with your code. The button writes it for you.</p>
+          <div class="code"><span>Your code</span><b class="mycode">PBL-000000</b><button class="btn small white copy-code" type="button">Copy</button></div>
+          <div class="actions"><a class="btn cyan" id="dReply" data-open="dcomment" target="_blank" rel="noopener" href="#">Write the comment <svg class="ico"><use href="#i-ext"/></svg></a><button class="btn ghost back" data-back="d5">Back</button></div>
+          <div class="ask after" data-for="dcomment" hidden>
+            <label class="field">
+              <span>Your comment link</span>
+              <input id="dLink" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://x.com/yourname/status/1234567890">
+              <small>On your comment, tap Share, then Copy link.</small>
+            </label>
+            <label class="hp" aria-hidden="true">Website<input class="hpin" type="text" tabindex="-1" autocomplete="off"></label>
+            <div class="actions"><button class="btn lime" id="dClaim">Claim $WPEBBLE <svg class="ico go"><use href="#i-go"/></svg></button></div>
+            <div class="work" id="dWork" hidden><div class="wbar"><i></i></div><span>Verifying your comment...</span></div>
+          </div>
+          <p class="msg" id="msg-d6" role="alert"></p>
+        </section>
+
+        <section class="wstep done" data-step="d7" hidden>
+          <div class="k">Done</div>
+          <h2>Claimed!</h2>
+          <div class="alloc">
+            <div class="alloc-top"><span>Your $WPEBBLE</span><span id="cX"></span></div>
+            <div class="alloc-amt"><b id="cAmt">0</b><small>$WPEBBLE</small></div>
+            <div class="alloc-w" id="cWallet"></div>
+          </div>
+          <div class="convert">
+            <h3>How to convert to $PEBBLE</h3>
+            <ol>
+              <li>Wait for the mint to sell out.</li>
+              <li>24 hours later, the <a class="inl" href="convert">Convert page</a> opens on this website.</li>
+              <li>Connect this same wallet and tap Convert.</li>
+              <li>1 $WPEBBLE = 1 $PEBBLE. You only pay a small gas fee.</li>
+            </ol>
+            <div class="vest"><div><b>20%</b><span>Day 1</span></div><div><b>40%</b><span>Week 2</span></div><div><b>60%</b><span>Week 3</span></div><div><b>80%</b><span>Week 4</span></div><div><b>100%</b><span>Week 5</span></div></div>
+            <p class="vest-note">20% unlocks on day 1. Another 20% unlocks every 7 days, so you have 100% in week 5.</p>
+          </div>
+          <div class="actions">
+            <a class="btn lime open-x" target="_blank" rel="noopener" href="#">Turn on notifications <svg class="ico"><use href="#i-ext"/></svg></a>
+            <a class="btn red" id="dShare" target="_blank" rel="noopener" href="#">Share on X</a>
+          </div>
+        </section>
+
+        <section class="wstep" data-step="n1" hidden>
+          <div class="k">Result</div>
+          <h2>Not on the list</h2>
+          <p>Wallet <b id="nWallet"></b> has fewer than 30 transactions on Robinhood Chain in our snapshot.</p>
+          <p class="sub">Good news: you can still mine <b>300 $WPEBBLE</b> a day, for up to 3 days.</p>
+          <div class="actions"><button class="btn lime" id="nMine">Start mining <svg class="ico go"><use href="#i-go"/></svg></button><button class="btn ghost back" data-back="d1">Search again</button></div>
+        </section>
+
+        <section class="wstep" data-step="m2" hidden>
+          <div class="k">Start mining</div>
+          <h2>Three tasks to start</h2>
+          <p>Tap each task, do it on X, then come back.</p>
+          <div class="tasks">
+            <a class="task open-post" data-open="mlike" target="_blank" rel="noopener" href="#"><i class="tk"><svg class="ico"><use href="#i-tick"/></svg></i><span>Like the pinned post</span><svg class="ico"><use href="#i-ext"/></svg></a>
+            <a class="task open-post" data-open="mrepost" target="_blank" rel="noopener" href="#"><i class="tk"><svg class="ico"><use href="#i-tick"/></svg></i><span>Repost the pinned post</span><svg class="ico"><use href="#i-ext"/></svg></a>
+            <a class="task" id="mReply" data-open="mcomment" target="_blank" rel="noopener" href="#"><i class="tk"><svg class="ico"><use href="#i-tick"/></svg></i><span>Comment with your code</span><svg class="ico"><use href="#i-ext"/></svg></a>
+          </div>
+          <div class="code"><span>Your code</span><b class="mycode">PBL-000000</b><button class="btn small white copy-code" type="button">Copy</button></div>
+          <div class="ask after" data-for="mcomment" hidden>
+            <label class="field">
+              <span>Your comment link</span>
+              <input id="mLink" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://x.com/yourname/status/1234567890">
+              <small>On your comment, tap Share, then Copy link.</small>
+            </label>
+            <label class="hp" aria-hidden="true">Website<input class="hpin" type="text" tabindex="-1" autocomplete="off"></label>
+            <p class="safe">Next you connect this wallet and sign one free message. It never moves your funds.</p>
+            <div class="actions"><button class="btn lime" id="mStart">Connect and start mining <svg class="ico go"><use href="#i-go"/></svg></button></div>
+            <div class="work" id="mStartWork" hidden><div class="wbar"><i></i></div><span>Verifying your comment...</span></div>
+          </div>
+          <div class="actions"><button class="btn ghost back" data-back="n1">Back</button></div>
+          <p class="msg" id="msg-m2" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="m4" hidden>
+          <div class="k" id="mDay">Mining · Day 1 of 3</div>
+          <h2 id="mHead">Your crow is mining</h2>
+          <div class="miner">
+            <div class="mine-amt"><b id="mLive">0.0000</b><small>/ 300 $WPEBBLE</small></div>
+            <div class="mbar"><i id="mBar"></i></div>
+            <div class="mine-row"><span id="mLeft">24:00:00 left</span><span id="mPct">0%</span></div>
+          </div>
+          <div class="bal"><span>Your balance</span><b><span class="mTotal">0</span> $WPEBBLE</b></div>
+          <div class="actions"><button class="btn lime" id="mClaim" disabled>Claim 300 $WPEBBLE</button></div>
+          <div class="work" id="mClaimWork" hidden><div class="wbar"><i></i></div><span>Collecting your pebbles...</span></div>
+          <p class="msg" id="msg-m4" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="m5" hidden>
+          <div class="k" id="mNext">Mine again · Day 2 of 3</div>
+          <h2>Post to mine again</h2>
+          <div class="bal"><span>Your balance</span><b><span class="mTotal">0</span> $WPEBBLE</b></div>
+          <p class="note-bad" id="mNote" hidden></p>
+          <p>Make a new post on X about Pebble Crows. Tag <b class="handle">us</b> and add your code. Our team checks it, and mining starts again when it is approved.</p>
+          <div class="code"><span>Your code</span><b class="mycode">PBL-000000</b><button class="btn small white copy-code" type="button">Copy</button></div>
+          <div class="actions"><a class="btn cyan" id="mPost" data-open="mpost" target="_blank" rel="noopener" href="#">Write the post <svg class="ico"><use href="#i-ext"/></svg></a></div>
+          <div class="ask after" data-for="mpost" hidden>
+            <label class="field">
+              <span>Your post link</span>
+              <input id="mPostLink" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://x.com/yourname/status/1234567890">
+              <small>Use the same X account as before. Each post works once.</small>
+            </label>
+            <label class="hp" aria-hidden="true">Website<input class="hpin" type="text" tabindex="-1" autocomplete="off"></label>
+            <div class="actions"><button class="btn lime" id="mSubmit">Send for approval <svg class="ico go"><use href="#i-go"/></svg></button></div>
+            <div class="work" id="mPostWork" hidden><div class="wbar"><i></i></div><span>Sending your post...</span></div>
+          </div>
+          <p class="msg" id="msg-m5" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="m6" hidden>
+          <div class="k">Waiting</div>
+          <h2>Waiting for approval</h2>
+          <p>Our team is checking your post. Keep it up. Mining starts again by itself when it is approved.</p>
+          <div class="miner wait">
+            <div class="mine-amt"><b id="wSince">0m</b><small>since you sent it</small></div>
+            <div class="mbar v"><i class="pulse"></i></div>
+          </div>
+          <div class="bal"><span>Your balance</span><b><span class="mTotal">0</span> $WPEBBLE</b></div>
+          <div class="actions"><button class="btn white" id="mRefresh" type="button">Check again</button></div>
+          <p class="msg" id="msg-m6" role="alert"></p>
+        </section>
+
+        <section class="wstep done" data-step="m7" hidden>
+          <div class="k">Mining complete</div>
+          <h2>All 3 days mined!</h2>
+          <div class="alloc">
+            <div class="alloc-top"><span>Your $WPEBBLE</span><span>3 of 3 days</span></div>
+            <div class="alloc-amt"><b class="mTotal">0</b><small>$WPEBBLE</small></div>
+          </div>
+          <div class="convert">
+            <h3>How to convert to $PEBBLE</h3>
+            <p>24 hours after the mint sells out, the <a class="inl" href="convert">Convert page</a> opens. Connect this same wallet and tap Convert. 1 $WPEBBLE = 1 $PEBBLE.</p>
+            <div class="vest"><div><b>20%</b><span>Day 1</span></div><div><b>40%</b><span>Week 2</span></div><div><b>60%</b><span>Week 3</span></div><div><b>80%</b><span>Week 4</span></div><div><b>100%</b><span>Week 5</span></div></div>
+          </div>
+          <div class="actions"><a class="btn lime open-x" target="_blank" rel="noopener" href="#">Turn on notifications <svg class="ico"><use href="#i-ext"/></svg></a></div>
+        </section>
+
+        <section class="wstep" data-step="x0" hidden>
+          <div class="k">Coming soon</div>
+          <h2>Opening soon</h2>
+          <p id="x0Text">This part opens soon. Please check back shortly.</p>
+          <div class="actions"><a class="btn lime open-x" target="_blank" rel="noopener" href="#">Follow for updates <svg class="ico"><use href="#i-ext"/></svg></a><button class="btn ghost back" data-back="d1">Back</button></div>
+        </section>
+
+      </div>
+    </div>
+
+    <section class="how" id="how">
+      <h2>How it works</h2>
+      <div class="how-grid">
+        <div class="hcard"><span>01</span><h3>Snapshot</h3><p>We took every wallet with 30 or more transactions on Robinhood Chain. More activity gets a bigger tier.</p></div>
+        <div class="hcard"><span>02</span><h3>Claim</h3><p>Search your wallet first, no connect needed. If you are eligible, connect the wallet, like, repost and comment with your code. Each X account can claim for one wallet.</p></div>
+        <div class="hcard"><span>03</span><h3>Mine</h3><p>Not on the list? Mine <b class="rate">300 $WPEBBLE</b> a day, for up to 3 days. To mine again, post about us on X. Our team approves it, then mining starts again.</p></div>
+        <div class="hcard"><span>04</span><h3>Convert</h3><p>24 hours after the mint sells out, convert 1 $WPEBBLE to 1 $PEBBLE. 20% unlocks on day 1, then 20% more every week until 100% in week 5.</p></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <div><a class="brand" href="./"><canvas id="logo2" class="px" width="24" height="24"></canvas>PEBBLE<b>CROWS</b></a><span class="chain"><i></i>Built on Robinhood Chain</span></div>
+      <div class="links"><a href="./">Home</a><a href="convert">Convert</a><a href="whitelist">Whitelist</a><a href="./#faq">FAQ</a></div>
+    </div>
+    <div class="legal"><span>Pebble Crows is an independent project and is not affiliated with or endorsed by Robinhood.</span><span>$WPEBBLE is a claim ticket with no value until it is converted. Details may be adjusted before launch.</span></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="config.js"></script>
+<script src="crows.js"></script>
+<script src="pixels.js"></script>
+<script src="wallet.js"></script>
+<script src="airdrop.js"></script>
+</body>
+</html>

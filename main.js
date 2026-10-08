@@ -14,6 +14,7 @@
   crowTo($("#logo2"), LOGO);
   crowTo($("#heroFallback"), Px.HERO);
   crowTo($("#ctaCrow"), { Feather: 2, Eye: 5, Background: 8, Aura: 1, Plumage: 0, Neck: 3, Eyes: 2, Beak: 1, Carry: 2, Eyewear: 0, Headwear: 5 });
+  crowTo($("#dropCrow"), { Feather: 1, Eye: 2, Background: 4, Aura: 0, Plumage: 2, Neck: 1, Eyes: 1, Beak: 0, Carry: 1, Eyewear: 1, Headwear: 2 });
   $$("canvas[data-crow]").forEach((c) => crowTo(c, Crows.roll(Px.rng(+c.dataset.crow))));
 
   if (CFG.xProfile) ["#navX", "#footX"].forEach((s) => { const a = $(s); a.href = CFG.xProfile; a.hidden = false; });

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>if (/\.html$/.test(location.pathname)) history.replaceState(null, "", location.pathname.replace(/\.html$/, "") + location.search + location.hash);</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convert $WPEBBLE · Pebble Crows</title>
+<meta name="description" content="Convert your $WPEBBLE into $PEBBLE. 20% unlocks on day 1, then 20% more every week.">
+<meta property="og:title" content="Convert $WPEBBLE · Pebble Crows">
+<meta property="og:description" content="Convert your $WPEBBLE into $PEBBLE, 1 to 1. 20% unlocks on day 1, then 20% more every week.">
+<meta property="og:image" content="og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="og.png">
+<meta name="theme-color" content="#ccff00">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js"}}</script>
+</head>
+<body class="wl-page drop-page">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-go" viewBox="0 0 8 7"><rect x="0" y="3" width="7" height="1"/><rect x="4" y="0" width="1" height="1"/><rect x="5" y="1" width="1" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="7" y="3" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="4" y="6" width="1" height="1"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 7 7"><rect x="2" y="0" width="5" height="1"/><rect x="6" y="0" width="1" height="5"/><rect x="5" y="1" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="bar">
+    <a class="brand" href="./"><canvas id="logo" class="px" width="24" height="24"></canvas>PEBBLE<b>CROWS</b></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="./">Home</a>
+      <a href="airdrop">Airdrop</a>
+      <a href="whitelist">Whitelist</a>
+      <a href="./#faq">FAQ</a>
+    </nav>
+    <button class="wchip" id="wChip" type="button">Connect</button>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+    <i class="progressbar" id="progressbar"></i>
+  </div>
+</header>
+
+<main class="wl lime-bg">
+  <div class="wrap">
+    <div class="wl-top">
+      <span class="tag" id="cTag"><i></i>Convert</span>
+      <h1>$WPEBBLE to $PEBBLE.</h1>
+      <p>1 $WPEBBLE = 1 $PEBBLE. 20% unlocks on day 1, then 20% more every week.</p>
+    </div>
+
+    <div class="vest big" id="vest">
+      <div data-k="1"><b>20%</b><span>Day 1</span></div>
+      <div data-k="2"><b>40%</b><span>Week 2</span></div>
+      <div data-k="3"><b>60%</b><span>Week 3</span></div>
+      <div data-k="4"><b>80%</b><span>Week 4</span></div>
+      <div data-k="5"><b>100%</b><span>Week 5</span></div>
+    </div>
+    <p class="vest-when" id="vestWhen">Converting opens 24 hours after the mint sells out.</p>
+
+    <div class="wl-grid">
+      <aside class="guide">
+        <div class="wl-stage" id="wlStage">
+          <div class="fallback"><canvas id="wlFallback" class="px" width="24" height="24"></canvas></div>
+        </div>
+        <div class="bubble" id="bubble" aria-live="polite">Caw! Time to turn pebbles into $PEBBLE.</div>
+      </aside>
+
+      <div class="panel">
+        <section class="wstep" data-step="c0" hidden>
+          <div class="k">Coming soon</div>
+          <h2>Not open yet</h2>
+          <p>Converting opens 24 hours after the mint sells out. We will post the exact time on X.</p>
+          <p class="sub">Do not have $WPEBBLE yet? Claim or mine it on the Airdrop page.</p>
+          <div class="actions"><a class="btn lime" href="airdrop">Go to Airdrop <svg class="ico go"><use href="#i-go"/></svg></a><a class="btn cyan open-x" target="_blank" rel="noopener" href="#">Follow for updates <svg class="ico"><use href="#i-ext"/></svg></a></div>
+        </section>
+
+        <section class="wstep" data-step="c1" hidden>
+          <div class="k">Step 1</div>
+          <h2>Connect your wallet</h2>
+          <p>Connect the same wallet you used to claim or mine $WPEBBLE.</p>
+          <div class="actions"><button class="btn lime" id="cConnect" type="button">Connect wallet <svg class="ico go"><use href="#i-go"/></svg></button></div>
+          <div class="work" id="cLoad" hidden><div class="wbar"><i></i></div><span>Looking up your pebbles...</span></div>
+          <p class="msg" id="msg-c1" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="c2" hidden>
+          <div class="k" id="cWalletK">Your wallet</div>
+          <h2 id="cHead">Ready to convert</h2>
+          <div class="alloc">
+            <div class="alloc-top"><span>Ready now</span><span id="cPct">20% unlocked</span></div>
+            <div class="alloc-amt"><b id="cReady">0</b><small>$PEBBLE</small></div>
+            <div class="alloc-w" id="cNext"></div>
+          </div>
+          <div class="stats-list">
+            <div><span>Your total $WPEBBLE</span><b id="cTotal">0</b></div>
+            <div><span>Unlocked so far</span><b id="cUnlocked">0</b></div>
+            <div><span>Already converted</span><b id="cDone">0</b></div>
+            <div><span>Still locked</span><b id="cLocked">0</b></div>
+          </div>
+          <div class="actions">
+            <button class="btn lime" id="cGo" type="button">Convert</button>
+            <button class="btn ghost" id="cAdd" type="button">Add $PEBBLE to wallet</button>
+          </div>
+          <p class="msg" id="msg-c2" role="alert"></p>
+        </section>
+
+        <section class="wstep" data-step="c3" hidden>
+          <div class="k">Not found</div>
+          <h2>No $WPEBBLE here</h2>
+          <p>Wallet <b id="c3Wallet"></b> is not on the convert list.</p>
+          <p class="sub">Only wallets that claimed or mined $WPEBBLE before the snapshot can convert.</p>
+          <div class="actions"><button class="btn ghost" id="cOther" type="button">Use another wallet</button></div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <div><a class="brand" href="./"><canvas id="logo2" class="px" width="24" height="24"></canvas>PEBBLE<b>CROWS</b></a><span class="chain"><i></i>Built on Robinhood Chain</span></div>
+      <div class="links"><a href="./">Home</a><a href="airdrop">Airdrop</a><a href="whitelist">Whitelist</a><a href="./#faq">FAQ</a></div>
+    </div>
+    <div class="legal"><span>Pebble Crows is an independent project and is not affiliated with or endorsed by Robinhood.</span><span>Converting sends a transaction. You only pay network gas.</span></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="config.js"></script>
+<script src="crows.js"></script>
+<script src="pixels.js"></script>
+<script src="keccak.js"></script>
+<script src="wallet.js"></script>
+<script src="convert.js"></script>
+</body>
+</html>
