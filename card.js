@@ -1,6 +1,6 @@
 (function () {
   const W = 1200, H = 675;
-  const COL = { lime: "#ccff00", red: "#ff1f3d", cyan: "#00e5ff", violet: "#9d4dff", ink: "#07070b", card: "#13131d", line: "#2a2a3c", text: "#f3f3ff", muted: "#b3b3cc" };
+  const COL = { lime: "#97fce4", red: "#ff1f3d", cyan: "#00e5ff", violet: "#9d4dff", ink: "#04070b", card: "#0d161b", line: "#1f3138", text: "#effffb", muted: "#a9c2c0" };
   const TIER_NAMES = { 1: "PEBBLE FINDER", 2: "PEBBLE HUNTER", 3: "PEBBLE HOARDER" };
 
   function seedOf(wallet) {
@@ -108,7 +108,7 @@
     const lz = fit(ctx, link, W - 60 - rx - 48, 34, "body");
     text(ctx, link, rx + 24, by + 50, lz, COL.lime, "body");
 
-    text(ctx, "Built on Robinhood Chain", fx, 636, 28, COL.muted, "body");
+    text(ctx, "Built on Elysium", fx, 636, 28, COL.muted, "body");
 
     return c;
   }

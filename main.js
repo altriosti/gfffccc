@@ -30,10 +30,10 @@
   addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  const words = ["4,000 crows", "16 pitchers", "GPU + CPU mining", "Fully on-chain", "Robinhood Chain", "$PEBBLE", "Water for stakers", "Buyback & burn", "Liquidity locked forever"];
+  const words = ["4,000 crows", "16 pitchers", "GPU + CPU mining", "Fully on-chain", "Elysium", "$PEBBLE", "Water for stakers", "Buyback & burn", "Liquidity locked forever"];
   const track = $("#marquee");
   track.innerHTML = words.concat(words).map((w) => "<span>" + w + "</span>").join("");
-  const words2 = ["Drop a pebble", "Raise the water", "Mint #10 opens trading", "0.0005 ETH first crow", "Stake 30 days for 4x", "Whitelist is open"];
+  const words2 = ["Drop a pebble", "Raise the water", "Mint #10 opens trading", "0.007 HYPE first crow", "Stake 30 days for 4x", "Whitelist is open"];
   $("#marquee2").innerHTML = words2.concat(words2).map((w) => "<span>" + w + "</span>").join("");
 
   const stage = $("#stage");
@@ -134,8 +134,8 @@
   search();
   requestAnimationFrame(tickFinder);
 
-  const price = (i) => 0.0005 + (0.0195 * (i - 1)) / 3999;
-  const fp = (v) => v.toFixed(v < 0.01 ? 4 : 3);
+  const price = (i) => 0.007 + (0.273 * (i - 1)) / 3999;
+  const fp = (v) => v.toFixed(3);
   const VASE = "M23 5 H37 L36 10 Q35 16 41 21 Q53 31 53 47 Q53 63 43 69 L43 74 H17 L17 69 Q7 63 7 47 Q7 31 19 21 Q25 16 24 10 Z";
   const jugs = $("#jugs");
   for (let k = 1; k <= 16; k++) {
@@ -144,7 +144,7 @@
     const id = "cj" + k;
     const d = document.createElement("div");
     d.className = "jug";
-    d.title = "Crows #" + fmt((k - 1) * 250 + 1) + " to #" + fmt(k * 250) + ": " + fp(price((k - 1) * 250 + 1)) + " to " + fp(price(k * 250)) + " ETH";
+    d.title = "Crows #" + fmt((k - 1) * 250 + 1) + " to #" + fmt(k * 250) + ": " + fp(price((k - 1) * 250 + 1)) + " to " + fp(price(k * 250)) + " HYPE";
     d.innerHTML =
       '<svg viewBox="0 0 60 80"><defs><clipPath id="' + id + '"><path d="' + VASE + '"/></clipPath></defs>' +
       '<g clip-path="url(#' + id + ')"><rect x="0" y="' + y.toFixed(1) + '" width="60" height="80" fill="#07070b"/>' +
@@ -160,24 +160,24 @@
   {
     const L = 66, Rr = 784, T = 20, B = 226;
     const X = (i) => L + ((i - 1) / 3999) * (Rr - L);
-    const Y = (p) => B - (p / 0.02) * (B - T);
-    let s = '<defs><linearGradient id="gl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ccff00" stop-opacity="0.28"/><stop offset="1" stop-color="#ccff00" stop-opacity="0"/></linearGradient></defs>';
+    const Y = (p) => B - (p / 0.28) * (B - T);
+    let s = '<defs><linearGradient id="gl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#97fce4" stop-opacity="0.3"/><stop offset="1" stop-color="#2fa89a" stop-opacity="0"/></linearGradient><linearGradient id="hyl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#97fce4"/><stop offset="0.6" stop-color="#50d2c1"/><stop offset="1" stop-color="#00e5ff"/></linearGradient></defs>';
     for (let k = 0; k < 16; k++) {
       const x0 = X(k * 250 + 1), x1 = X((k + 1) * 250);
       s += '<rect x="' + x0.toFixed(1) + '" y="' + T + '" width="' + (x1 - x0 - 2).toFixed(1) + '" height="' + (B - T) + '" rx="4" fill="' + (k % 2 ? "#15151f" : "#101018") + '"/>';
       if (k % 3 === 0 || k === 15) s += '<text x="' + ((x0 + x1) / 2).toFixed(1) + '" y="' + (B + 26) + '" fill="#7a7a96" font-family="Jersey 10, monospace" font-size="18" text-anchor="middle">P' + (k + 1) + "</text>";
     }
-    [0, 0.005, 0.01, 0.015, 0.02].forEach((p) => {
+    [0, 0.07, 0.14, 0.21, 0.28].forEach((p) => {
       s += '<line x1="' + L + '" x2="' + Rr + '" y1="' + Y(p) + '" y2="' + Y(p) + '" stroke="#2a2a3c" stroke-dasharray="4 6"/>';
       s += '<text x="' + (L - 12) + '" y="' + (Y(p) + 4) + '" fill="#b3b3cc" font-family="Jersey 10, monospace" font-size="18" text-anchor="end">' + p + "</text>";
     });
     const line = "M" + X(1) + " " + Y(price(1)) + " L" + X(4000) + " " + Y(price(4000));
     s += '<path d="' + line + " L" + X(4000) + " " + B + " L" + X(1) + " " + B + ' Z" fill="url(#gl)"/>';
-    s += '<path id="cline" d="' + line + '" fill="none" stroke="#ccff00" stroke-width="5" stroke-linecap="square"/>';
-    s += '<rect x="' + (X(1) - 7) + '" y="' + (Y(price(1)) - 7) + '" width="14" height="14" fill="#ccff00"/>';
+    s += '<path id="cline" d="' + line + '" fill="none" stroke="url(#hyl)" stroke-width="5" stroke-linecap="square"/>';
+    s += '<rect x="' + (X(1) - 7) + '" y="' + (Y(price(1)) - 7) + '" width="14" height="14" fill="#97fce4"/>';
     s += '<rect x="' + (X(4000) - 7) + '" y="' + (Y(price(4000)) - 7) + '" width="14" height="14" fill="#ff1f3d"/>';
     s += '<rect id="cdot" width="12" height="12" fill="#00e5ff"/>';
-    s += '<text x="' + (L - 12) + '" y="' + (T - 6) + '" fill="#7a7a96" font-family="Jersey 10, monospace" font-size="16" text-anchor="end">ETH</text>';
+    s += '<text x="' + (L - 12) + '" y="' + (T - 6) + '" fill="#7a7a96" font-family="Jersey 10, monospace" font-size="16" text-anchor="end">HYPE</text>';
     svg.innerHTML = s;
     const dot = $("#cdot");
     let ci = 1;

@@ -72,7 +72,7 @@ export function createVoxel(container) {
   const cyan = new THREE.DirectionalLight(0x00e5ff, 2.4);
   cyan.position.set(50, 10, -40);
   scene.add(cyan);
-  const lime = new THREE.PointLight(0xccff00, 140, 70);
+  const lime = new THREE.PointLight(0x97fce4, 140, 70);
   lime.position.set(0, -6, 34);
   scene.add(lime);
 
@@ -89,7 +89,7 @@ export function createVoxel(container) {
   const b2 = new THREE.Mesh(new THREE.BoxGeometry(28, 2, 26), baseMat);
   b2.position.y = -15;
   base.add(b2);
-  const glowCols = [0xccff00, 0xff1f3d, 0x00e5ff, 0x9d4dff];
+  const glowCols = [0x97fce4, 0xff1f3d, 0x00e5ff, 0x9d4dff];
   [[0, -14, 13.1, 28, 0.5, 0.3], [0, -14, -13.1, 28, 0.5, 0.3], [14.1, -14, 0, 0.3, 0.5, 26], [-14.1, -14, 0, 0.3, 0.5, 26]].forEach((p, i) => {
     const m = new THREE.Mesh(new THREE.BoxGeometry(p[3], p[4], p[5]), new THREE.MeshBasicMaterial({ color: glowCols[i], toneMapped: false }));
     m.position.set(p[0], p[1], p[2]);

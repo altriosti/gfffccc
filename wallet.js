@@ -1,5 +1,5 @@
 (function () {
-  const CFG = Object.assign({ chainId: 4663, chainName: "Robinhood Chain", rpc: "https://rpc.mainnet.chain.robinhood.com", explorer: "https://robinhoodchain.blockscout.com" }, window.PEBBLE_CONFIG || {});
+  const CFG = Object.assign({ chainId: 99901, chainName: "Elysium", rpc: "https://rpc.elysium.kinetiq.xyz", explorer: "https://elysium.kinetiq.xyz/explorer" }, window.PEBBLE_CONFIG || {});
   const W = { p: null, info: null, account: null, chainOk: false, providers: [] };
   const KEY = "pebble_wallet";
   const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
@@ -47,7 +47,7 @@
   function niceError(e) {
     const m = String((e && (e.shortMessage || (e.data && e.data.message) || e.message)) || e);
     if ((e && e.code === 4001) || /reject|denied|cancel/i.test(m)) return "You cancelled the request.";
-    if (/insufficient funds/i.test(m)) return "Not enough ETH for gas.";
+    if (/insufficient funds/i.test(m)) return "Not enough HYPE for gas.";
     const custom = { NotOpen: "Converting has not opened yet.", BadProof: "This wallet is not on the convert list.", NothingToConvert: "Nothing new to convert yet. Wait for the next unlock." };
     for (const k in custom) if (m.includes(k)) return custom[k];
     return m.length > 160 ? m.slice(0, 160) + "..." : m;
@@ -61,7 +61,7 @@
     } catch (e) {
       const code = e && (e.code || (e.data && e.data.originalError && e.data.originalError.code));
       if (code === 4902 || /unrecognized|not added|unknown chain/i.test(String(e && e.message))) {
-        await W.p.request({ method: "wallet_addEthereumChain", params: [{ chainId: hexChain, chainName: CFG.chainName, nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 }, rpcUrls: [CFG.rpc], blockExplorerUrls: [CFG.explorer] }] });
+        await W.p.request({ method: "wallet_addEthereumChain", params: [{ chainId: hexChain, chainName: CFG.chainName || "Elysium", nativeCurrency: { name: "HYPE", symbol: "HYPE", decimals: 18 }, rpcUrls: [CFG.rpc], blockExplorerUrls: [CFG.explorer] }] });
       } else throw e;
     }
     const id2 = await W.p.request({ method: "eth_chainId" });

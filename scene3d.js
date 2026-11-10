@@ -58,7 +58,7 @@ function environment(renderer) {
   };
   glow(5, 3, 0, 3.9, 0, 0xffffff, 3);
   glow(3, 4, -5.9, 1, 2, 0xffffff, 2.2);
-  glow(4, 2, 5.9, 0.5, -2, 0xccff00, 1.6);
+  glow(4, 2, 5.9, 0.5, -2, 0x97fce4, 1.6);
   glow(3, 3, 0, 1, 5.9, 0xffffff, 1.2);
   const pm = new THREE.PMREMGenerator(renderer);
   const tex = pm.fromScene(env, 0.035).texture;
@@ -154,7 +154,7 @@ export function createScene(container, opt) {
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  const bg = new THREE.Color(opt.bg || "#ccff00");
+  const bg = new THREE.Color(opt.bg || "#97fce4");
   scene.background = bg;
   scene.environment = environment(renderer);
   scene.environmentIntensity = 0.9;
@@ -174,9 +174,9 @@ export function createScene(container, opt) {
   halo.width = halo.height = 128;
   const hc = halo.getContext("2d");
   const grad = hc.createRadialGradient(64, 64, 0, 64, 64, 64);
-  grad.addColorStop(0, "rgba(40,60,0,0.22)");
-  grad.addColorStop(0.55, "rgba(40,60,0,0.08)");
-  grad.addColorStop(1, "rgba(40,60,0,0)");
+  grad.addColorStop(0, "rgba(0,60,52,0.22)");
+  grad.addColorStop(0.55, "rgba(0,60,52,0.08)");
+  grad.addColorStop(1, "rgba(0,60,52,0)");
   hc.fillStyle = grad;
   hc.fillRect(0, 0, 128, 128);
   const haloTex = new THREE.CanvasTexture(halo);
@@ -188,9 +188,9 @@ export function createScene(container, opt) {
   blobC.width = blobC.height = 64;
   const bc = blobC.getContext("2d");
   const bg2 = bc.createRadialGradient(32, 32, 0, 32, 32, 32);
-  bg2.addColorStop(0, "rgba(20,30,0,0.55)");
-  bg2.addColorStop(0.5, "rgba(20,30,0,0.28)");
-  bg2.addColorStop(1, "rgba(20,30,0,0)");
+  bg2.addColorStop(0, "rgba(0,34,30,0.55)");
+  bg2.addColorStop(0.5, "rgba(0,34,30,0.28)");
+  bg2.addColorStop(1, "rgba(0,34,30,0)");
   bc.fillStyle = bg2;
   bc.fillRect(0, 0, 64, 64);
   const blobTex = new THREE.CanvasTexture(blobC);

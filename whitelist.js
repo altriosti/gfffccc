@@ -4,7 +4,7 @@
   const $$ = (s) => Array.from(document.querySelectorAll(s));
   const API = (CFG.sheetApi || "").trim();
   const READY = !!API;
-  const STORE = "pebble_wl_v1";
+  const STORE = "pebble_wl_ely_v1";
   const T0 = Date.now();
   const opened = {};
   const data = { link: "", linkUser: "" };
@@ -186,7 +186,7 @@
     x_taken: "This X account is already on the whitelist.",
     link_taken: "This comment link was already used.",
     link_user: "The comment link must be from the same X account you entered.",
-    bad_wallet: "Please enter a valid ETH wallet address.",
+    bad_wallet: "Please enter a valid EVM wallet address (0x...).",
     bad_user: "Please enter a valid X username.",
     bad_link: "Your comment link is not valid. Please go back and paste it again.",
     busy: "Many crows are joining right now. Please try again in a minute.",

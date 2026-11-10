@@ -42,7 +42,7 @@
   };
 
   const ERR = {
-    bad_wallet: "Please enter a valid ETH wallet address.",
+    bad_wallet: "Please enter a valid EVM wallet address (0x...).",
     claimed: "This wallet already claimed.",
     not_eligible: "This wallet is not on the airdrop list.",
     eligible: "This wallet is on the airdrop list. Please claim your airdrop instead.",
@@ -175,8 +175,8 @@
     $("#invited").hidden = !invitedBy();
     const pid = postId(PINNED);
     const reply = (t) => "https://x.com/intent/post?" + (pid ? "in_reply_to=" + pid + "&" : "") + "text=" + encodeURIComponent(t);
-    $("#dReply").href = reply("Claiming my $WPEBBLE from " + handle() + " on Robinhood Chain.");
-    $("#mReply").href = reply("Mining $WPEBBLE with " + handle() + " on Robinhood Chain.");
+    $("#dReply").href = reply("Claiming my $WPEBBLE from " + handle() + " on Elysium.");
+    $("#mReply").href = reply("Mining $WPEBBLE with " + handle() + " on Elysium.");
     $$(".refLink").forEach((e) => { e.textContent = refUrl().replace(/^https?:\/\//, ""); });
   }
 
@@ -408,7 +408,7 @@
       b.disabled = true;
       b.textContent = "Share first to claim";
       go("d6");
-      await makeCard("d", { kind: "claim", amount: amt, tier: tier }, "I just claimed " + fmt(amt) + " $WPEBBLE from " + handle() + " on Robinhood Chain. Search your wallet and claim yours:", () => {
+      await makeCard("d", { kind: "claim", amount: amt, tier: tier }, "I just claimed " + fmt(amt) + " $WPEBBLE from " + handle() + " on Elysium. Search your wallet and claim yours:", () => {
         b.disabled = false;
         b.textContent = "Claim " + fmt(amt) + " $WPEBBLE";
         say("Great post! Now claim your pebbles.");
@@ -437,7 +437,7 @@
     $("#cAmt").textContent = fmt(amount);
     $("#cWallet").textContent = short(wallet);
     paintRef();
-    if (!cards.d || !cards.d.blob) makeCard("d", { kind: "claim", amount: amount, tier: tier || (st && st.claim && st.claim.tier) || 1 }, "I just claimed " + fmt(amount) + " $WPEBBLE from " + handle() + " on Robinhood Chain. Search your wallet and claim yours:");
+    if (!cards.d || !cards.d.blob) makeCard("d", { kind: "claim", amount: amount, tier: tier || (st && st.claim && st.claim.tier) || 1 }, "I just claimed " + fmt(amount) + " $WPEBBLE from " + handle() + " on Elysium. Search your wallet and claim yours:");
     go("d7");
     pebbles(5);
   }
@@ -474,7 +474,7 @@
     }
     go("m3");
     const o = mode === "start" ? { kind: "start", amount: (st && st.reward) || 300, unit: "$WPEBBLE A DAY", badge: "PEBBLE MINER" } : { kind: "mine", amount: m.total, badge: "PEBBLE MINER  DAY " + m.days + " OF " + max };
-    const t = mode === "start" ? "I just started mining $WPEBBLE with " + handle() + " on Robinhood Chain. 300 a day. Join me:" : "Day " + m.days + " done. I have mined " + fmt(m.total) + " $WPEBBLE with " + handle() + " on Robinhood Chain. Join me:";
+    const t = mode === "start" ? "I just started mining $WPEBBLE with " + handle() + " on Elysium. 300 a day. Join me:" : "Day " + m.days + " done. I have mined " + fmt(m.total) + " $WPEBBLE with " + handle() + " on Elysium. Join me:";
     makeCard("m", o, t, () => {
       g.disabled = false;
       g.textContent = mode === "start" ? "Start mining" : "Start mining again";
@@ -506,7 +506,7 @@
     $("#mDay").textContent = "Mining · Day " + Math.min(max, m.days || 1) + " of " + max;
     paintRef();
     if (m.state === "done") {
-      if (!cards.m || !cards.m.blob) makeCard("m", { kind: "mine", amount: m.total, badge: "PEBBLE MINER  ALL 3 DAYS" }, "I mined " + fmt(m.total) + " $WPEBBLE with " + handle() + " on Robinhood Chain. Join me:");
+      if (!cards.m || !cards.m.blob) makeCard("m", { kind: "mine", amount: m.total, badge: "PEBBLE MINER  ALL 3 DAYS" }, "I mined " + fmt(m.total) + " $WPEBBLE with " + handle() + " on Elysium. Join me:");
       go("m7");
       pebbles(5);
       return;

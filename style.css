@@ -1,18 +1,22 @@
 @import url("fonts.css");
 
 :root {
-  --lime: #ccff00;
+  --lime: #97fce4;
+  --mint-2: #50d2c1;
+  --mint-3: #2fa89a;
+  --hyper: linear-gradient(120deg, #97fce4 0%, #50d2c1 55%, #2fa89a 100%);
+  --neon: 0 0 14px rgba(151, 252, 228, 0.55), 0 0 34px rgba(80, 210, 193, 0.35);
   --red: #ff1f3d;
   --cyan: #00e5ff;
   --violet: #9d4dff;
-  --ink: #07070b;
-  --ink-2: #0e0e16;
-  --card: #13131d;
-  --card-2: #1b1b28;
-  --line: #2a2a3c;
-  --text: #f3f3ff;
-  --muted: #b3b3cc;
-  --dim: #7a7a96;
+  --ink: #04070b;
+  --ink-2: #081015;
+  --card: #0d161b;
+  --card-2: #13202a;
+  --line: #1f3138;
+  --text: #effffb;
+  --muted: #a9c2c0;
+  --dim: #6f8a8a;
   --water: #1fa8ff;
   --bad: #ff5d6c;
   --px: 'Jersey 10', 'VT323', monospace;
@@ -34,18 +38,18 @@ p { margin: 0; }
 .ico { width: 1em; height: 1em; fill: currentColor; shape-rendering: crispEdges; flex: none; }
 .notch { clip-path: polygon(0 var(--c), var(--c) var(--c), var(--c) 0, calc(100% - var(--c)) 0, calc(100% - var(--c)) var(--c), 100% var(--c), 100% calc(100% - var(--c)), calc(100% - var(--c)) calc(100% - var(--c)), calc(100% - var(--c)) 100%, var(--c) 100%, var(--c) calc(100% - var(--c)), 0 calc(100% - var(--c))); }
 
-.lime-bg { background: var(--lime); color: var(--ink); }
+.lime-bg { background: var(--hyper); color: var(--ink); }
 .red-bg { background: var(--red); color: var(--ink); }
 .cyan-bg { background: var(--cyan); color: var(--ink); }
 .violet-bg { background: var(--violet); color: var(--ink); }
-.grid-bg { background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px); background-size: 32px 32px; }
+.grid-bg { background-image: linear-gradient(rgba(151, 252, 228, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(151, 252, 228, 0.05) 1px, transparent 1px); background-size: 32px 32px; }
 
 .nav { position: fixed; top: 12px; left: 0; right: 0; z-index: 60; padding: 0 14px; pointer-events: none; }
 .nav .bar { pointer-events: auto; position: relative; max-width: calc(var(--wrap) - 48px); margin: 0 auto; display: flex; align-items: center; gap: 12px; background: var(--ink); padding: 8px 10px 8px 12px; box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink), 6px 10px 0 0 rgba(0, 0, 0, 0.35), 10px 6px 0 0 rgba(0, 0, 0, 0.35); }
-.progressbar { position: absolute; left: 0; bottom: -4px; height: 4px; width: 0; background: linear-gradient(90deg, var(--lime), var(--cyan), var(--red), var(--violet)); }
+.progressbar { position: absolute; left: 0; bottom: -4px; height: 4px; width: 0; background: linear-gradient(90deg, var(--lime), var(--mint-2), var(--cyan), var(--violet)); box-shadow: var(--neon); }
 .brand { display: flex; align-items: center; gap: 10px; font-family: var(--px); font-size: 28px; line-height: 1; color: var(--text); white-space: nowrap; }
 .brand canvas { width: 36px; height: 36px; }
-.brand b { color: var(--lime); font-weight: 400; }
+.brand b { color: var(--lime); font-weight: 400; text-shadow: var(--neon); }
 .brand:hover canvas { animation: hop 0.5s steps(4); }
 @keyframes hop { 50% { transform: translateY(-6px); } }
 .nav-links { display: flex; gap: 2px; margin-left: auto; }
@@ -319,9 +323,9 @@ footer .links a:nth-child(4n+4):hover { color: var(--violet); }
 .wl { padding: 118px 0 90px; min-height: 100vh; }
 .wl-top { text-align: center; max-width: 720px; margin: 0 auto 34px; }
 .wl-top h1 { font-size: clamp(70px, 10vw, 130px); margin: 18px 0 10px; text-shadow: 5px 5px 0 var(--red); }
-.wl-top p { font-size: 25px; color: #2a3212; }
+.wl-top p { font-size: 25px; color: #0b3b35; }
 .progress { list-style: none; margin: 0 auto 36px; padding: 0; display: flex; justify-content: center; gap: 8px; max-width: 820px; }
-.progress li { --a: var(--lime); flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; font-family: var(--px); font-size: 20px; line-height: 1; text-transform: uppercase; color: #4a5424; }
+.progress li { --a: var(--lime); flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; font-family: var(--px); font-size: 20px; line-height: 1; text-transform: uppercase; color: #1d5a52; }
 .progress li:nth-child(2) { --a: var(--red); }
 .progress li:nth-child(3) { --a: var(--cyan); }
 .progress li:nth-child(4) { --a: var(--violet); }
@@ -329,7 +333,7 @@ footer .links a:nth-child(4n+4):hover { color: var(--violet); }
 .progress li:nth-child(6) { --a: var(--cyan); }
 .progress li::before { content: ""; position: absolute; top: 20px; left: calc(-50% + 26px); right: calc(50% + 26px); height: 4px; background: rgba(0, 0, 0, 0.15); }
 .progress li:first-child::before { display: none; }
-.progress li i { font-style: normal; width: 44px; height: 44px; display: grid; place-items: center; background: rgba(0, 0, 0, 0.1); font-family: var(--px); font-size: 30px; line-height: 1; color: #4a5424; transition: all 0.25s steps(3); }
+.progress li i { font-style: normal; width: 44px; height: 44px; display: grid; place-items: center; background: rgba(0, 0, 0, 0.1); font-family: var(--px); font-size: 30px; line-height: 1; color: #1d5a52; transition: all 0.25s steps(3); }
 .progress li.now { color: var(--ink); }
 .progress li.now i { background: var(--ink); color: var(--a); transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--a); }
 .progress li.done i { background: var(--ink); color: var(--a); }
@@ -467,7 +471,7 @@ footer .links a:nth-child(4n+4):hover { color: var(--violet); }
 .tier b { display: block; font-family: var(--px); font-weight: 400; font-size: 54px; line-height: 0.95; color: var(--lime); margin-top: 6px; }
 .tier small { display: block; font-size: 18px; color: var(--muted); }
 .tabs { display: flex; justify-content: center; gap: 12px; margin: 0 auto 30px; }
-.tabbtn { font: 30px var(--px); line-height: 1; padding: 14px 26px 10px; background: rgba(0, 0, 0, 0.12); color: #2a3212; border: 0; cursor: pointer; transition: transform 0.15s steps(2); }
+.tabbtn { font: 30px var(--px); line-height: 1; padding: 14px 26px 10px; background: rgba(0, 0, 0, 0.12); color: #0b3b35; border: 0; cursor: pointer; transition: transform 0.15s steps(2); }
 .tabbtn.on { background: var(--ink); color: var(--lime); transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--red); }
 .sub { margin-top: 12px; color: var(--muted); font-size: 22px; }
 .robot { display: flex; align-items: center; gap: 16px; background: var(--card); padding: 16px 18px; box-shadow: inset 0 0 0 3px var(--line); font-family: var(--px); font-size: 26px; line-height: 1; }
@@ -484,7 +488,7 @@ footer .links a:nth-child(4n+4):hover { color: var(--violet); }
 .alloc-amt { display: flex; align-items: baseline; gap: 10px; margin-top: 8px; }
 .alloc-amt b { font-family: var(--px); font-weight: 400; font-size: clamp(70px, 10vw, 104px); line-height: 0.9; color: var(--ink); }
 .alloc-amt small { font-family: var(--px); font-size: 28px; }
-.alloc-w { margin-top: 6px; font-size: 20px; color: #2a3212; }
+.alloc-w { margin-top: 6px; font-size: 20px; color: #0b3b35; }
 .done .alloc { text-align: left; }
 .tasks { display: grid; gap: 10px; margin-top: 20px; }
 .task { display: flex; align-items: center; gap: 14px; background: var(--card); padding: 14px 16px; box-shadow: inset 0 0 0 3px var(--line); font-size: 23px; transition: box-shadow 0.15s steps(2); }
@@ -597,3 +601,12 @@ footer .links a:nth-child(4n+4):hover { color: var(--violet); }
 .mbar.v { overflow: hidden; }
 @media (max-width: 560px) { .progress.p7 li i { width: 32px; height: 32px; font-size: 22px; } .progress.p7 li::before { top: 14px; left: calc(-50% + 18px); right: calc(50% + 18px); } }
 @media (max-width: 900px) { .drop-page .wl-grid .panel { order: -1; } .drop-page .guide { margin-top: 6px; } }
+
+/* Elysium / HyperEVM theme */
+body { background: radial-gradient(1100px 600px at 85% -10%, rgba(80, 210, 193, 0.1), transparent 60%), radial-gradient(900px 520px at 0% 45%, rgba(157, 77, 255, 0.06), transparent 60%), var(--ink); background-attachment: fixed; }
+.hl-lime { background: var(--hyper); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 12px rgba(151, 252, 228, 0.35)); }
+.btn.lime { background: var(--hyper); }
+.btn.lime:hover, .btn:not(.lime):not(.red):not(.cyan):not(.violet):not(.white):not(.ghost):not(.line):hover { filter: drop-shadow(0 0 10px rgba(151, 252, 228, 0.55)); }
+.btn:not(.lime):not(.red):not(.cyan):not(.violet):not(.white):not(.ghost):not(.line) { text-shadow: 0 0 10px rgba(151, 252, 228, 0.6); }
+.soon { display: inline-block; margin-top: 12px; padding: 5px 10px 3px; font-family: var(--px); font-size: 18px; line-height: 1.1; color: var(--ink); background: var(--hyper); box-shadow: var(--neon); animation: soonPulse 2.4s steps(6) infinite; }
+@keyframes soonPulse { 50% { filter: brightness(1.2); } }
