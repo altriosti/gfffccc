@@ -5,6 +5,18 @@
   const API = (CFG.sheetApi || "").trim();
   const READY = !!API;
   const STORE = "pebble_wl_ely_v1";
+  const REF_KEY = "pebble_ref";
+  function refCode() {
+    try {
+      const q = (new URLSearchParams(location.search).get("ref") || "").toLowerCase();
+      if (/^[0-9a-f]{10}$/.test(q)) localStorage.setItem(REF_KEY, q);
+      const r = (localStorage.getItem(REF_KEY) || "").toLowerCase();
+      return /^[0-9a-f]{10}$/.test(r) ? r : "";
+    } catch (e) {
+      return "";
+    }
+  }
+  refCode();
   const T0 = Date.now();
   const opened = {};
   const data = { link: "", linkUser: "" };
@@ -256,6 +268,7 @@
         if (j.ok) {
           setWork(true, 1, "Splash!");
           store(false, { wallet: wallet, x: user });
+          sendRef(wallet);
           await sleep(500);
           setWork(false);
           finish(wallet);
@@ -279,9 +292,16 @@
   $("#form").addEventListener("submit", submit);
   $("#xuser").addEventListener("input", (e) => { const v = e.target.value.replace(/^@+/, ""); if (v !== e.target.value) e.target.value = v; });
 
+  function sendRef(wallet) {
+    const ad = (CFG.airdropApi || "").trim();
+    const ref = refCode();
+    if (!ad || !ref || ref === wallet.toLowerCase().slice(2, 12)) return;
+    fetch(ad, { method: "POST", body: JSON.stringify({ action: "wl_ref", wallet: wallet, ref: ref }) }).catch(() => {});
+  }
+
   function finish(wallet) {
     $("#doneWallet").textContent = wallet.slice(0, 6) + "..." + wallet.slice(-4);
-    const text = "I just joined the Pebble Crows whitelist" + (handle().charAt(0) === "@" ? " " + handle() : "") + ". Drop a pebble, raise the water.";
+    const text = "I was selected for the Pebble Crows whitelist on Elysium" + (handle().charAt(0) === "@" ? " " + handle() : "") + ". 200,000 $PEBBLE for every crow I mint.";
     const url = location.href.replace(/[?#].*$/, "");
     $("#share").href = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(url);
     scene.fill(5);
